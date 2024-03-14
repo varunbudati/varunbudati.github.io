@@ -122,14 +122,14 @@ languages:
 # #   Add/remove as many awards below as you like.
 # #   Only `title`, `awarder`, and `date` are required.
 # #   Begin multi-line `summary` with YAML's `|` or `|2-` multi-line prefix and indent 2 spaces below.
- awards:
-   - title: Looking forward to...
-     url: 
-     date: ''
-     awarder: 
-     icon: 
-     summary: |
-       Highly motivated student with a passion for learning. Excellent communication and organizational skills, with a proven ability to work well both independently and in team settings. Keen interest in algorithmic & high-frequency trading, AI, and machine learning.
+#  awards:
+#    - title: Looking forward to...
+#      url: 
+#      date: ''
+#      awarder: 
+#      icon: 
+#      summary: |
+#        Highly motivated student with a passion for learning. Excellent communication and organizational skills, with a proven ability to work well both independently and in team settings. Keen interest in algorithmic & high-frequency trading, AI, and machine learning.
        
 #   - title: Blockchain Fundamentals
 #     url: https://www.edx.org/professional-certificate/uc-berkeleyx-blockchain-fundamentals

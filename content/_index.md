@@ -37,10 +37,6 @@ sections:
     content:
       title: Skills & Hobbies
       username: admin
-  - block: awards
-    content:
-      title: About Me
-      username: admin
   - block: languages
     content:
       title: Languages
