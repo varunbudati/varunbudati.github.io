@@ -21,7 +21,8 @@ role: Student/Research Assistant at Virginia Tech
 
 # Organizations/Affiliations to display in Biography blox
 organizations:
-  - name: Highly motivated student with a passion for learning. Excellent communication and organizational skills, with a proven ability to work well both independently and in team settings. Keen interest in algorithmic & high-frequency trading, AI, and machine learning.
+  - name: I am a highly motivated student with a passion for learning, having a 
+  keen interest in algorithmic & high-frequency trading, AI, and machine learning.
     url: https://varunbudati.github.io/
 
 # Social network links
