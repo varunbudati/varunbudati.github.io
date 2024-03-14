@@ -21,8 +21,8 @@ role: Student/Research Assistant at Virginia Tech
 
 # Organizations/Affiliations to display in Biography blox
 organizations:
-  - name: Virginia Tech
-    url: https://www.vt.edu/
+  - name: Highly motivated student with a passion for learning. Excellent communication and organizational skills, with a proven ability to work well both independently and in team settings. Keen interest in algorithmic & high-frequency trading, AI, and machine learning.
+    url: https://varunbudati.github.io/
 
 # Social network links
 # Need to use another icon? Simply download the SVG icon to your `assets/media/icons/` folder.
@@ -58,7 +58,7 @@ work:
     date_start: 2024-03-01
     date_end: ''
     summary: |
-      Currently working in a team on using computer science in rural areas. Reading research papers and exploring data in this aspect.
+      Currently working in a team doing Research.
   - position: Intership
     company_name: Amricani Cultual Center
     company_url: ''
