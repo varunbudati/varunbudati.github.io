@@ -21,8 +21,17 @@ role: Student/Research Assistant at Virginia Tech
 
 # Organizations/Affiliations to display in Biography blox
 organizations:
-  - name: I am a highly motivated student with a passion for learning, having a 
-  keen interest in algorithmic & high-frequency trading, AI, and machine learning.
+  - name: I'm a freshman at VT from Kuwait pursuing a
+        bachelor's degree in computer science, and hopefully a minor
+        in mathematics and finance. I aim to connect with
+        new people to improve my analytical skills and gain
+        hands-on experience. I intend to learn new skills such as 
+        building strong relationships that hold a team together.
+        I also aim to strategize my thinking which helps me absorb 
+        and analyze information that generates better decisions. Being
+        particularly interested in finding and creating algorithms and 
+        connecting patterns mostly in the sector of trading/finance. A fun 
+        fact about me is I love to play the guitar!
     url: https://varunbudati.github.io/
 
 # Social network links
