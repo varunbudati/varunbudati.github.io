@@ -22,7 +22,7 @@ role: Student/Research Assistant at Virginia Tech
 # Organizations/Affiliations to display in Biography blox
 organizations:
   - name: I'm a freshman at VT from Kuwait pursuing a
-        bachelor's degree in computer science, and hopefully a minor
+        bachelor's degree in computer science, and hopefully a minor 
         in mathematics and finance. I aim to connect with
         new people to improve my analytical skills and gain
         hands-on experience. I intend to learn new skills such as 
@@ -49,7 +49,13 @@ education:
     date_start: 2023-08-21
     date_end: ''
     summary: |
-      Currently studying at Virginia Tech, doing part time research at REACH Lab.
+      Reimagining Equity and Accessibility in Computing for Humanity (REACH) Lab is a globally recognized HCI lab located at Virginia Tech.
+
+      I am working under the leadership of Dr. Ihudiya Finda Williams, on a focused project on Rural Computer Science Education.
+
+      My work is to assist on literature reviews and collecting research data and collate papers.
+      Teaming with other highly skilled researchers, I am actively collaborating with the research group in a HCI lab focused on community-engaged research with marginalized communities worldwide.
+      
     button:
       text: 'REACH Lab'
       url: 'https://reach.cs.vt.edu/index.html'
