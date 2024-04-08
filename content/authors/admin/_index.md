@@ -49,13 +49,7 @@ education:
     date_start: 2023-08-21
     date_end: ''
     summary: |
-      Reimagining Equity and Accessibility in Computing for Humanity (REACH) Lab is a globally recognized HCI lab located at Virginia Tech.
-
-      - I am working under the leadership of Dr. Ihudiya Finda Williams, on a focused project on Rural Computer Science Education.
-
-      - My work is to assist on literature reviews and collecting research data and collate papers.
-      Teaming with other highly skilled researchers, I am actively collaborating with the research group in a HCI lab focused on community-engaged research with marginalized communities worldwide.
-
+      Currently studying at Virginia Tech, doing part time research at REACH Lab.
     button:
       text: 'REACH Lab'
       url: 'https://reach.cs.vt.edu/index.html'
@@ -74,7 +68,12 @@ work:
     date_start: 2024-03-01
     date_end: ''
     summary: |
-      Currently working in a team doing Research.
+      Reimagining Equity and Accessibility in Computing for Humanity (REACH) Lab is a globally recognized HCI lab located at Virginia Tech.
+
+      - I am working under the leadership of Dr. Ihudiya Finda Williams, on a focused project on Rural Computer Science Education.
+
+      - My work is to assist on literature reviews and collecting research data and collate papers.
+      Teaming with other highly skilled researchers, I am actively collaborating with the research group in a HCI lab focused on community-engaged research with marginalized communities worldwide.
   - position: Intership
     company_name: Amricani Cultual Center
     company_url: ''
