@@ -51,11 +51,11 @@ education:
     summary: |
       Reimagining Equity and Accessibility in Computing for Humanity (REACH) Lab is a globally recognized HCI lab located at Virginia Tech.
 
-      I am working under the leadership of Dr. Ihudiya Finda Williams, on a focused project on Rural Computer Science Education.
+      - I am working under the leadership of Dr. Ihudiya Finda Williams, on a focused project on Rural Computer Science Education.
 
-      My work is to assist on literature reviews and collecting research data and collate papers.
+      - My work is to assist on literature reviews and collecting research data and collate papers.
       Teaming with other highly skilled researchers, I am actively collaborating with the research group in a HCI lab focused on community-engaged research with marginalized communities worldwide.
-      
+
     button:
       text: 'REACH Lab'
       url: 'https://reach.cs.vt.edu/index.html'
