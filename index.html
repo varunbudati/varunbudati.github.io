@@ -343,13 +343,53 @@
         - #RESUME
       -->
 
+      
       <article class="resume" data-page="resume">
-
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            .header {
+                display: flex;
+                align-items: center;
+                
+            }
+    
+            .download-button {
+                background-color: #f0c040;
+                border: none;
+                padding: 10px 20px;
+                margin-left: 20px;
+                cursor: pointer;
+                border-radius: 5px;
+                text-decoration: none;
+                color: #fff;
+                font-weight: bold;
+                margin-top: -40px;
+            }
+    
+            .download-button:hover {
+                background-color: #e5b135;
+            }
+            .pdf-preview {
+              width: 50%; /* Adjust width as needed */
+              height: 600px; /* Adjust height as needed */
+              border: 1px solid #ccc;
+              margin-left: 20px;
+            }
+        </style>
+    </head>
+    <body>
+    
+    <div class="header">
         <header>
           <h2 class="h2 article-title">Resume</h2>
         </header>
-
-        <section class="timeline">
+        <a href="./assets/images/resume.pdf" class="download-button" download>Download</a>
+    </div>
+        
+        
+         <section class="timeline">
+          
 
           <div class="title-wrapper">
             <div class="icon-box">
