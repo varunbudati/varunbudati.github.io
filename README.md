@@ -1,6 +1,8 @@
 #  My Personal portfolio
 
-![My Resume](https://github.com/user-attachments/assets/3cb99137-3655-4b1a-8b29-5c3e373f9673)
+![My Resume](https://github.com/user-attachments/assets/6bba9427-2bc4-4cde-9fb2-379e6a935034)
+
+
 
 
 
