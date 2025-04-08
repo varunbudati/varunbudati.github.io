@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portfolio</title>
+  <title>Varun Budati | Quant Finance & Development</title>
 
   <!--
     - favicon
@@ -13,18 +13,1647 @@
   <link rel="shortcut icon" href="./assets/images/logo.ico" type="image/x-icon">
 
   <!--
-    - custom css link
-  -->
-  <link rel="stylesheet" href="./assets/css/style.css">
-
-  <!--
     - google font link
   -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!--
+    - ionicons & font awesome
+  -->
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+
+  <!--
+    - custom css (Quant/CS Theme)
+  -->
+  <style>
+    /*-----------------------------------*\
+  # CONCEPTUAL 3D PLOT STYLES (Add This Block!)
+\*-----------------------------------*/
+
+.conceptual-plot-3d {
+  height: 250px; /* Adjust height as needed */
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden; /* Hide parts of axes if they extend */
+  perspective: 600px; /* Activate 3D space */
+  margin-top: 20px; /* Space from controls */
+  background: repeating-linear-gradient( /* Faint grid background */
+      0deg,
+      var(--jet),
+      var(--jet) 1px,
+      transparent 1px,
+      transparent 40px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      var(--jet),
+      var(--jet) 1px,
+      transparent 1px,
+      transparent 40px
+    );
+  background-color: var(--eerie-black-1); /* Base background */
+  border: 1px solid var(--jet);
+}
+
+.plot-plane {
+  position: absolute;
+  inset: 5% 10% 15% 5%; /* Padding around the plane */
+  border-left: 2px solid var(--light-gray-70); /* Y-axis line */
+  border-bottom: 2px solid var(--light-gray-70); /* X-axis line */
+  transform-style: preserve-3d;
+  transform: rotateX(60deg) rotateZ(-10deg) scale(0.9); /* Rotate plane for 3D effect */
+  /* Optional: Add a subtle plane background */
+  /* background: hsla(240, 2%, 15%, 0.3); */
+}
+
+.plot-dot {
+  position: absolute;
+  border-radius: 50%;
+  transform-style: preserve-3d; /* So translateZ works */
+  box-shadow: 0 0 8px 2px hsla(0, 0%, 0%, 0.5); /* Depth shadow */
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(0,0,0,0.3); /* Subtle border */
+}
+
+.plot-dot:hover {
+  transform: scale(1.3) translateZ(30px) !important; /* Bring forward and enlarge on hover */
+  box-shadow: 0 0 15px 5px hsla(45, 100%, 72%, 0.4); /* Glow on hover */
+  z-index: 10; /* Ensure hovered dot is on top */
+}
+
+/* Define colors based on technology */
+.plot-dot.tech-quant {
+  background: linear-gradient(135deg, var(--market-green), hsl(140, 70%, 35%)); /* Green for Quant */
+}
+.plot-dot.tech-quant-deep {
+    background: linear-gradient(135deg, hsl(180, 100%, 50%), hsl(180, 100%, 35%)); /* Cyan for deeper Quant/Algo */
+}
+.plot-dot.tech-ml {
+  background: linear-gradient(135deg, hsl(210, 100%, 60%), hsl(210, 100%, 45%)); /* Blue for ML */
+}
+.plot-dot.tech-web {
+  background: linear-gradient(135deg, var(--orange-yellow-crayola), var(--vegas-gold)); /* Yellow for Web */
+}
+
+/* Axis Labels */
+.axis {
+  position: absolute;
+  color: var(--light-gray-70);
+  font-family: var(--ff-code);
+  font-size: var(--fs-8);
+}
+
+.axis.x-axis {
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.axis.y-axis {
+  bottom: 50%;
+  left: 5px;
+  transform: translateY(50%) rotate(-90deg);
+  transform-origin: left bottom;
+}
+
+.axis.z-axis-label { /* Conceptual label for depth */
+  top: 5px;
+  right: 10px;
+  font-style: italic;
+}
+
+/*-----------------------------------*\
+ * End of CONCEPTUAL 3D PLOT STYLES
+\*-----------------------------------*/
+    :root {
+      /**
+       * colors
+       */
+
+      /* gradient */
+      --bg-gradient-onyx: linear-gradient(
+        to bottom right,
+        hsl(240, 1%, 25%) 3%,
+        hsl(0, 0%, 19%) 97%
+      );
+      --bg-gradient-jet: linear-gradient(
+        to bottom right,
+        hsla(240, 1%, 18%, 0.251) 0%,
+        hsla(240, 2%, 11%, 0) 100%
+      ), hsl(240, 2%, 13%);
+      --bg-gradient-yellow-1: linear-gradient(
+        to bottom right,
+        hsl(45, 100%, 71%) 0%,
+        hsla(36, 100%, 69%, 0) 50%
+      );
+      --bg-gradient-yellow-2: linear-gradient(
+        135deg,
+        hsla(45, 100%, 71%, 0.251) 0%,
+        hsla(35, 100%, 68%, 0) 59.86%
+      ), hsl(240, 2%, 13%);
+      --border-gradient-onyx: linear-gradient(
+        to bottom right,
+        hsl(0, 0%, 25%) 0%,
+        hsla(0, 0%, 25%, 0) 50%
+      );
+      --text-gradient-yellow: linear-gradient(
+        to right,
+        hsl(45, 100%, 72%),
+        hsl(35, 100%, 68%)
+      );
+
+      /* terminal colors */
+      --terminal-bg: hsl(240, 10%, 8%); /* Darker background for terminal */
+      --terminal-text: hsl(120, 100%, 75%); /* Classic green terminal text */
+      --terminal-prompt: hsl(180, 100%, 50%); /* Cyan for prompt symbol */
+      --terminal-command: hsl(0, 0%, 90%); /* Off-white for commands */
+      --terminal-output: hsl(120, 50%, 70%); /* Slightly dimmer green for output */
+
+      /* crypto/market colors */
+      --market-green: hsl(140, 70%, 45%);
+      --market-red: hsl(0, 70%, 55%);
+
+      /* solid */
+      --jet: hsl(0, 0%, 22%);
+      --onyx: hsl(240, 1%, 17%);
+      --eerie-black-1: hsl(240, 2%, 13%);
+      --eerie-black-2: hsl(240, 2%, 12%);
+      --smoky-black: hsl(0, 0%, 7%);
+      --white-1: hsl(0, 0%, 100%);
+      --white-2: hsl(0, 0%, 98%);
+      --orange-yellow-crayola: hsl(45, 100%, 72%);
+      --vegas-gold: hsl(45, 54%, 58%);
+      --light-gray: hsl(0, 0%, 84%);
+      --light-gray-70: hsla(0, 0%, 84%, 0.7);
+      --bittersweet-shimmer: hsl(0, 43%, 51%);
+
+      /**
+       * typography
+       */
+
+      /* font-family */
+      --ff-poppins: 'Poppins', sans-serif;
+      --ff-code: 'JetBrains Mono', monospace; /* Code font */
+
+      /* font-size */
+      --fs-1: 24px;
+      --fs-2: 18px;
+      --fs-3: 17px;
+      --fs-4: 16px;
+      --fs-5: 15px;
+      --fs-6: 14px;
+      --fs-7: 13px;
+      --fs-8: 11px;
+
+      /* font-weight */
+      --fw-300: 300;
+      --fw-400: 400;
+      --fw-500: 500;
+      --fw-600: 600;
+
+      /**
+       * shadow
+       */
+      --shadow-1: -4px 8px 24px hsla(0, 0%, 0%, 0.25);
+      --shadow-2: 0 16px 30px hsla(0, 0%, 0%, 0.25);
+      --shadow-3: 0 16px 40px hsla(0, 0%, 0%, 0.25);
+      --shadow-4: 0 25px 50px hsla(0, 0%, 0%, 0.15);
+      --shadow-5: 0 24px 80px hsla(0, 0%, 0%, 0.25);
+
+      /**
+       * transition
+       */
+      --transition-1: 0.25s ease;
+      --transition-2: 0.5s ease-in-out;
+    }
+
+    /*-----------------------------------*\
+     * #RESET
+    \*-----------------------------------*/
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    a { text-decoration: none; }
+
+    li { list-style: none; }
+
+    img,
+    ion-icon,
+    a,
+    button,
+    time,
+    span { display: block; }
+
+    button {
+      font: inherit;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    input,
+    textarea {
+      display: block;
+      width: 100%;
+      background: none;
+      font: inherit;
+    }
+
+    ::selection {
+      background: var(--orange-yellow-crayola);
+      color: var(--smoky-black);
+    }
+
+    :focus { outline-offset: 4px; }
+
+    html { font-family: var(--ff-poppins); }
+
+    body { background: var(--smoky-black); }
+
+
+    /*-----------------------------------*\
+     * #REUSED STYLE
+    \*-----------------------------------*/
+
+    .sidebar,
+    article {
+      background: var(--bg-gradient-jet);
+      border: 1px solid var(--jet);
+      border-radius: 20px;
+      padding: 15px;
+      box-shadow: var(--shadow-1);
+      z-index: 1;
+    }
+
+    .separator {
+      width: 100%;
+      height: 1px;
+      background: var(--jet);
+      margin: 16px 0;
+    }
+
+    .icon-box {
+      position: relative;
+      background: var(--border-gradient-onyx);
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      color: var(--orange-yellow-crayola);
+      box-shadow: var(--shadow-1);
+      z-index: 1;
+    }
+
+    .icon-box::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      background: var(--eerie-black-1);
+      border-radius: inherit;
+      z-index: -1;
+    }
+
+    .icon-box ion-icon { --ionicon-stroke-width: 35px; }
+
+    article { display: none; }
+
+    article.active {
+      display: block;
+      animation: fade 0.5s ease backwards;
+    }
+
+    @keyframes fade {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    .h2,
+    .h3,
+    .h4,
+    .h5 {
+      color: var(--white-2);
+      line-height: 1.3;
+    }
+
+    .h2 { font-size: var(--fs-1); }
+
+    .h3 { font-size: var(--fs-2); }
+
+    .h4 { font-size: var(--fs-4); }
+
+    .h5 {
+      font-size: var(--fs-7);
+      font-weight: var(--fw-500);
+    }
+
+    .article-title {
+      position: relative;
+      padding-bottom: 7px;
+      margin-bottom: 30px; /* Added margin-bottom */
+    }
+
+    .article-title::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 30px;
+      height: 3px;
+      background: var(--text-gradient-yellow);
+      border-radius: 3px;
+    }
+
+    .has-scrollbar::-webkit-scrollbar {
+      width: 5px; /* For Vertical Scrollbar */
+      height: 5px; /* For Horizontal Scrollbar */
+    }
+
+    .has-scrollbar::-webkit-scrollbar-track {
+      background: var(--onyx);
+      border-radius: 5px;
+    }
+
+    .has-scrollbar::-webkit-scrollbar-thumb {
+      background: var(--orange-yellow-crayola);
+      border-radius: 5px;
+    }
+
+    .has-scrollbar::-webkit-scrollbar-button { width: 100px; }
+
+    .content-card {
+      position: relative;
+      background: var(--border-gradient-onyx);
+      padding: 15px;
+      padding-top: 45px;
+      border-radius: 14px;
+      box-shadow: var(--shadow-2);
+      z-index: 1;
+    }
+
+    .content-card::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      background: var(--bg-gradient-jet);
+      border-radius: inherit;
+      z-index: -1;
+    }
+
+
+    /*-----------------------------------*\
+     * #MAIN
+    \*-----------------------------------*/
+
+    main {
+      margin: 15px;
+      margin-bottom: 75px;
+      min-width: 250px;
+    }
+
+
+    /*-----------------------------------*\
+     * #SIDEBAR
+    \*-----------------------------------*/
+
+    .sidebar {
+      margin-bottom: 15px;
+      max-height: 112px;
+      overflow: hidden;
+      transition: var(--transition-2);
+    }
+
+    .sidebar.active { max-height: 405px; }
+
+    .sidebar-info {
+      position: relative;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .avatar-box {
+      background: var(--bg-gradient-onyx);
+      border-radius: 14px;
+    }
+
+    .avatar-box img { border-radius: inherit; }
+
+    .info-content .name {
+      color: var(--white-2);
+      font-size: var(--fs-3);
+      font-weight: var(--fw-500);
+      letter-spacing: -0.25px;
+      margin-bottom: 10px;
+    }
+
+    .info-content .title {
+      color: var(--white-1);
+      background: var(--onyx);
+      font-size: var(--fs-8);
+      font-weight: var(--fw-300);
+      width: max-content;
+      padding: 3px 12px;
+      border-radius: 8px;
+      font-family: var(--ff-code); /* Use code font for title */
+    }
+
+    .info_more-btn {
+      position: absolute;
+      top: -15px;
+      right: -15px;
+      background: var(--border-gradient-onyx);
+      width: 70px;
+      height: 70px;
+      border-radius: 0 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: var(--orange-yellow-crayola);
+      font-size: var(--fs-8);
+      box-shadow: var(--shadow-1);
+      transition: var(--transition-1);
+      z-index: 1;
+    }
+
+    .info_more-btn::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      background: var(--bg-gradient-jet);
+      border-radius: inherit;
+      z-index: -1;
+      transition: var(--transition-1);
+    }
+
+    .info_more-btn:hover,
+    .info_more-btn:focus { background: var(--bg-gradient-yellow-1); }
+
+    .info_more-btn:hover::before,
+    .info_more-btn:focus::before { background: var(--bg-gradient-yellow-2); }
+
+    .info_more-btn ion-icon {
+      font-size: 16px;
+      margin-bottom: 2px;
+      transform: rotate(0);
+      transition: var(--transition-1);
+    }
+
+    .sidebar.active .info_more-btn ion-icon { transform: rotate(0.5turn); }
+
+    .sidebar-info_more {
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition-2);
+    }
+
+    .sidebar.active .sidebar-info_more {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .contacts-list {
+      margin-bottom: -15px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 100%;
+      margin-bottom: 15px; /* Added margin-bottom */
+    }
+
+    .contact-info { width: calc(100% - 46px); }
+
+    .contact-title {
+      color: var(--light-gray-70);
+      font-size: var(--fs-8);
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .contact-info :is(.contact-link, address) {
+      color: var(--white-2);
+      font-size: var(--fs-7);
+    }
+
+    .contact-info address { font-style: normal; }
+
+    .contact-link { transition: var(--transition-1); }
+
+    .contact-link:hover { color: var(--orange-yellow-crayola); }
+
+    .social-list {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 15px;
+      padding-bottom: 5px;
+    }
+
+    .social-item .social-link {
+      color: var(--light-gray-70);
+      font-size: 18px;
+    }
+
+    .social-item .social-link:hover { color: var(--light-gray); }
+
+
+    /*-----------------------------------*\
+     * #MAIN CONTENT
+    \*-----------------------------------*/
+
+    .main-content {
+      min-width: 250px;
+      margin-top: 15px; /* Ensure space above main content */
+    }
+
+
+    /*-----------------------------------*\
+     * #NAVBAR
+    \*-----------------------------------*/
+
+    .navbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: hsla(240, 1%, 17%, 0.75);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--jet);
+      border-radius: 12px 12px 0 0;
+      box-shadow: var(--shadow-2);
+      z-index: 5;
+    }
+
+    .navbar-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      padding: 0 10px;
+    }
+
+    .navbar-link {
+      color: var(--light-gray);
+      font-size: var(--fs-8);
+      padding: 20px 7px;
+      transition: color var(--transition-1);
+      font-family: var(--ff-code); /* Code font for nav */
+    }
+
+    .navbar-link:hover,
+    .navbar-link:focus { color: var(--light-gray-70); }
+
+    .navbar-link.active {
+      color: var(--orange-yellow-crayola);
+      font-weight: var(--fw-500);
+    }
+
+
+    /*-----------------------------------*\
+     * #ABOUT PAGE STYLES
+    \*-----------------------------------*/
+
+    .about .article-title { margin-bottom: 15px; }
+
+    .about-text {
+      color: var(--light-gray);
+      font-size: var(--fs-6);
+      font-weight: var(--fw-400);
+      line-height: 1.6;
+      margin-bottom: 30px; /* Space below text */
+    }
+
+    .about-text p { margin-bottom: 15px; }
+
+    /* Ticker styles */
+    .ticker-container {
+      background: var(--terminal-bg);
+      overflow: hidden;
+      white-space: nowrap;
+      border-radius: 10px;
+      margin: 20px 0 30px; /* Space around ticker */
+      box-shadow: var(--shadow-2);
+      padding: 8px 0;
+      border: 1px solid var(--jet);
+    }
+
+    .ticker-wrap {
+      display: inline-block;
+      padding-left: 100%; /* Start off-screen */
+      animation: ticker 60s linear infinite;
+    }
+
+    .ticker-item {
+      display: inline-block;
+      padding: 0 20px;
+      font-family: var(--ff-code);
+      font-size: var(--fs-7);
+      color: var(--light-gray);
+    }
+
+    .ticker-price {
+      font-weight: var(--fw-500);
+      margin-left: 5px;
+    }
+
+    .ticker-up { color: var (--market-green); }
+    .ticker-down { color: var(--market-red); }
+
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* Terminal styles */
+    .terminal {
+      background: var(--terminal-bg);
+      border: 1px solid var(--jet);
+      border-radius: 10px;
+      font-family: var(--ff-code);
+      padding: 15px;
+      margin: 30px 0; /* Space around terminal */
+      box-shadow: var(--shadow-2);
+      color: var (--terminal-text); /* Default text color */
+    }
+
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--jet);
+    }
+
+    .terminal-buttons { display: flex; margin-right: 15px; }
+
+    .terminal-button {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .terminal-button.red { background-color: var(--market-red); }
+    .terminal-button.yellow { background-color: var(--orange-yellow-crayola); }
+    .terminal-button.green { background-color: var(--market-green); }
+
+    .terminal-title {
+      color: var(--light-gray-70);
+      font-size: var(--fs-7);
+    }
+
+    .terminal-body {
+      min-height: 100px; /* Min height */
+      max-height: 250px; /* Max height */
+      overflow-y: auto;
+      /* Custom scrollbar for terminal */
+      scrollbar-width: thin;
+      scrollbar-color: var(--terminal-prompt) var(--terminal-bg);
+    }
+     .terminal-body::-webkit-scrollbar { width: 6px; }
+     .terminal-body::-webkit-scrollbar-track { background: var(--terminal-bg); border-radius: 3px;}
+     .terminal-body::-webkit-scrollbar-thumb { background-color: var(--terminal-prompt); border-radius: 3px; border: 1px solid var(--terminal-bg); }
+
+
+    .terminal-line {
+      margin-bottom: 6px;
+      line-height: 1.4;
+      white-space: pre-wrap; /* Allow wrapping */
+      word-break: break-all; /* Break long words */
+      opacity: 0; /* For animation */
+      animation: fadeIn 0.1s forwards;
+    }
+
+    .terminal-prompt { color: var(--terminal-prompt); margin-right: 5px;}
+    .terminal-command { color: var(--terminal-command); }
+    .terminal-output { color: var(--terminal-output); margin-left: 5px; }
+
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* Metrics styles */
+    .metrics-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive grid */
+      gap: 15px;
+      margin: 30px 0;
+    }
+
+    .metric-card {
+      background: var(--eerie-black-2);
+      border: 1px solid var(--jet);
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: var(--shadow-1);
+      transition: transform var(--transition-1), box-shadow var(--transition-1);
+    }
+
+    .metric-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-3);
+    }
+
+    .metric-title {
+      color: var(--light-gray-70);
+      font-size: var(--fs-7);
+      margin-bottom: 10px;
+    }
+
+    .metric-value {
+      color: var(--white-1);
+      font-size: var(--fs-2);
+      font-weight: var(--fw-500);
+      font-family: var(--ff-code);
+      margin-bottom: 5px;
+      word-break: break-all;
+    }
+
+    .metric-change {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-size: var(--fs-7);
+      font-family: var(--ff-code);
+    }
+
+    .metric-up { color: var (--market-green); }
+    .metric-down { color: var(--market-red); }
+    .metric-change i { font-size: 10px; } /* Smaller icons */
+
+
+    /* Service (Interests) section */
+    .service { margin-bottom: 30px; }
+    .service-title { margin-bottom: 20px; }
+    .service-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .service-item {
+      position: relative;
+      background: var (--border-gradient-onyx);
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: var(--shadow-2);
+      z-index: 1;
+      transition: transform var(--transition-1), box-shadow var(--transition-1);
+    }
+     .service-item:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-3);
+    }
+
+    .service-item::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      background: var(--bg-gradient-jet);
+      border-radius: inherit;
+      z-index: -1;
+    }
+
+    .service-icon-box {
+      margin-bottom: 10px;
+      /* Optional: Style icon box if needed */
+       background: none; /* Remove default icon box background */
+       box-shadow: none;
+       width: 50px; /* Match image width */
+       height: 50px;
+    }
+
+    .service-icon-box img {
+      margin: auto;
+      width: 50px; /* Control icon size */
+      height: 50px;
+      filter: grayscale(30%) contrast(110%); /* Subtle image effect */
+    }
+
+    .service-content-box { text-align: left; }
+
+    .service-item-title { margin-bottom: 7px; }
+
+    .service-item-text {
+      color: var(--light-gray);
+      font-size: var(--fs-6);
+      font-weight: var(--fw-300);
+      line-height: 1.6;
+    }
+
+    /* Code snippet styles */
+    .code-snippet {
+      background: var(--terminal-bg);
+      border: 1px solid var (--jet);
+      border-radius: 10px;
+      font-family: var(--ff-code);
+      padding: 15px;
+      margin: 30px 0;
+      box-shadow: var(--shadow-2);
+      position: relative;
+      color: var(--terminal-text);
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--jet);
+    }
+
+    .code-title {
+      color: var(--light-gray-70);
+      font-size: var(--fs-7);
+    }
+
+    .code-actions { display: flex; gap: 10px; }
+
+    .code-actions i {
+      color: var(--light-gray-70);
+      cursor: pointer;
+      transition: var(--transition-1);
+      font-size: 14px;
+    }
+
+    .code-actions i:hover { color: var(--white-1); }
+
+    .code-content {
+      color: var(--terminal-output);
+      line-height: 1.6;
+      overflow-x: auto;
+      padding-left: 45px; /* Space for line numbers */
+       /* Custom scrollbar for code */
+      scrollbar-width: thin;
+      scrollbar-color: var(--terminal-prompt) var(--terminal-bg);
+    }
+     .code-content::-webkit-scrollbar { height: 6px; }
+     .code-content::-webkit-scrollbar-track { background: var(--terminal-bg); border-radius: 3px;}
+     .code-content::-webkit-scrollbar-thumb { background-color: var(--terminal-prompt); border-radius: 3px; border: 1px solid var(--terminal-bg); }
+
+    .code-content pre { margin: 0; } /* Remove default pre margin */
+
+    /* Basic Syntax Highlighting */
+    .code-content .keyword { color: #ff79c6; font-weight: bold; } /* Pink/Purple for keywords */
+    .code-content .operator { color: #ff79c6; } /* Same as keywords */
+    .code-content .string { color: #f1fa8c; } /* Yellow for strings */
+    .code-content .number { color: #bd93f9; } /* Purple for numbers */
+    .code-content .comment { color: #6272a4; font-style: italic; } /* Grey/Blue for comments */
+    .code-content .function { color: #50fa7b; } /* Green for functions */
+    .code-content .class { color: #8be9fd; } /* Cyan for classes */
+
+
+    .line-numbers {
+      position: absolute;
+      left: 15px;
+      top: 55px; /* Align with first line of code */
+      color: var(--light-gray-70);
+      text-align: right;
+      padding-right: 10px;
+      user-select: none; /* Prevent selection */
+      font-size: var(--fs-7);
+      line-height: 1.6; /* Match code content */
+    }
+
+
+    /*-----------------------------------*\
+     * #RESUME PAGE STYLES
+    \*-----------------------------------*/
+    .resume .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Space out title and button */
+        margin-bottom: 20px; /* Space below header */
+    }
+    .resume .article-title { margin-bottom: 0; } /* Remove bottom margin if inside flex */
+
+    .download-button {
+        background: var(--orange-yellow-crayola);
+        border: none;
+        padding: 8px 15px; /* Slightly smaller padding */
+        cursor: pointer;
+        border-radius: 8px;
+        text-decoration: none;
+        color: var(--eerie-black-2); /* Dark text on yellow */
+        font-weight: var(--fw-500);
+        font-family: var(--ff-code); /* Code font for button */
+        font-size: var(--fs-7);
+        transition: background var(--transition-1);
+        display: inline-flex; /* Align icon and text */
+        align-items: center;
+        gap: 5px;
+    }
+    .download-button i { font-size: 14px; } /* Icon size */
+    .download-button:hover { background: var(--vegas-gold); }
+
+
+    /* Chart/graph styles */
+    .chart-container {
+      background: var(--eerie-black-2);
+      border: 1px solid var(--jet);
+      border-radius: 10px;
+      padding: 15px;
+      margin: 30px 0;
+      box-shadow: var(--shadow-2);
+    }
+
+    .chart-header {
+      display: flex;
+      flex-wrap: wrap; /* Allow wrapping on small screens */
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      gap: 10px; /* Gap between title and controls */
+    }
+
+    .chart-title {
+      color: var (--light-gray);
+      font-size: var(--fs-5);
+    }
+
+    .chart-controls { display: flex; gap: 8px; }
+
+    .chart-control {
+      background: var(--jet);
+      color: var(--light-gray);
+      border: 1px solid var(--onyx);
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: var(--fs-8); /* Smaller font */
+      font-family: var(--ff-code);
+      cursor: pointer;
+      transition: var(--transition-1);
+    }
+
+    .chart-control:hover,
+    .chart-control.active {
+      background: var(--onyx);
+      color: var(--white-1);
+      border-color: var(--jet);
+    }
+
+    .chart-placeholder {
+      
+      background: repeating-linear-gradient(
+        45deg,
+        var(--terminal-bg),
+        var(--terminal-bg) 10px,
+        var(--eerie-black-1) 10px,
+        var(--eerie-black-1) 20px
+      ); /* Subtle background pattern */
+      height: 200px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--light-gray-70);
+      font-style: italic;
+      font-size: var(--fs-7);
+      border: 1px dashed var(--jet); /* Dashed border */
+    }
+
+    /* Timeline */
+    .timeline { margin-bottom: 30px; }
+
+    .timeline .title-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .timeline-list {
+      font-size: var(--fs-6);
+      margin-left: 45px;
+    }
+
+    .timeline-item { position: relative; }
+
+    .timeline-item:not(:last-child) { margin-bottom: 20px; }
+
+    .timeline-item-title {
+      font-size: var(--fs-4);
+      line-height: 1.3;
+      margin-bottom: 7px;
+    }
+
+    .timeline-item:not(:last-child)::before {
+      content: "";
+      position: absolute;
+      top: -25px;
+      left: -30px;
+      width: 1px;
+      height: calc(100% + 50px);
+      background: var(--jet);
+    }
+
+    .timeline-item::after {
+      content: "";
+      position: absolute;
+      top: 5px;
+      left: -33px;
+      height: 6px;
+      width: 6px;
+      background: var(--text-gradient-yellow);
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px var(--jet);
+    }
+
+    .timeline-text,
+    .timeline-item span {
+      color: var(--light-gray);
+      font-weight: var(--fw-300);
+      line-height: 1.6;
+    }
+     .timeline-item span {
+        font-weight: var(--fw-400);
+        color: var(--light-gray-70);
+        font-size: var(--fs-7);
+        margin-bottom: 5px;
+     }
+
+     .timeline-text {
+        margin-bottom: 5px; /* Space between bullet points */
+     }
+
+
+    /*-----------------------------------*\
+     * #PROJECTS PAGE STYLES
+    \*-----------------------------------*/
+    .projects .article-title { margin-bottom: 30px; }
+
+    /* Filter */
+    .filter-list { display: none; }
+
+    .filter-select-box { position: relative; margin-bottom: 25px; }
+
+    .filter-select {
+      background: var(--eerie-black-1);
+      color: var(--light-gray);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid var(--jet);
+      border-radius: 14px;
+      font-size: var(--fs-6);
+      font-weight: var(--fw-300);
+    }
+
+    .filter-select.active .select-icon { transform: rotate(0.5turn); }
+
+    .select-list {
+      background: var(--eerie-black-2);
+      position: absolute;
+      top: calc(100% + 6px);
+      width: 100%;
+      padding: 6px;
+      border: 1px solid var(--jet);
+      border-radius: 14px;
+      z-index: 2;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: 0.15s ease-in-out;
+    }
+
+    .filter-select.active + .select-list {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: all;
+    }
+
+    .select-item button {
+      background: var(--eerie-black-2);
+      color: var(--light-gray);
+      font-size: var(--fs-6);
+      font-weight: var(--fw-300);
+      text-transform: capitalize;
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+    }
+
+    .select-item button:hover { --eerie-black-2: hsl(240, 2%, 20%); }
+
+    /* Projects grid */
+    .project-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+      margin-bottom: 10px;
+    }
+
+    .project-item {
+      position: relative; /* Needed for new badge */
+      display: none;
+    }
+
+    .project-item.active {
+      display: block;
+      animation: scaleUp 0.25s ease forwards;
+    }
+
+    @keyframes scaleUp {
+      0% { transform: scale(0.5); }
+      100% { transform: scale(1); }
+    }
+
+    .project-item > a { position: relative; }
+
+    .project-item > a:hover .project-item-icon-box {
+      background: var(--bg-gradient-yellow-1);
+      color: var(--black);
+    }
+
+    .project-item > a:hover figcaption { opacity: 1; } /* Show text on hover */
+
+    .project-img {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 15px;
+      border: 1px solid var(--jet); /* Add border */
+    }
+
+    .project-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform var(--transition-1);
+    }
+
+     .project-item > a:hover img { transform: scale(1.05); } /* Subtle zoom on image */
+
+
+    .project-item-icon-box {
+      --scale: 0;
+      background: var(--jet);
+      color: var(--orange-yellow-crayola);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(var(--scale));
+      font-size: 20px;
+      padding: 18px;
+      border-radius: 12px;
+      opacity: 0;
+      transition: var(--transition-1);
+      z-index: 1;
+    }
+
+    .project-item > a:hover .project-item-icon-box {
+      --scale: 1;
+      opacity: 1;
+    }
+
+    .project-item-icon-box ion-icon { --ionicon-stroke-width: 50px; }
+
+    .project-title {
+      color: var(--white-2);
+      font-size: var(--fs-5);
+      font-weight: var(--fw-500);
+      text-transform: capitalize;
+      line-height: 1.3;
+      margin-bottom: 5px; /* Space below title */
+    }
+
+    .project-category {
+      color: var(--light-gray-70);
+      font-size: var(--fs-6);
+      font-weight: var(--fw-300);
+      margin-bottom: 10px; /* Space below category */
+    }
+
+    /* Tech Tags */
+    .project-tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .tech-tag {
+      background: var(--onyx);
+      color: var(--light-gray);
+      font-size: var(--fs-8);
+      font-family: var(--ff-code);
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--jet);
+    }
+
+     /* New Badge */
+    .new-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--market-green);
+      color: var(--terminal-bg);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: var(--fs-8);
+      font-weight: var(--fw-500);
+      z-index: 2;
+      font-family: var(--ff-code);
+      border: 1px solid var(--jet);
+    }
+
+    /* Project Card Enhancements */
+    .project-item {
+      background: var(--eerie-black-2);
+      padding: 15px;
+      border-radius: 16px;
+      box-shadow: var(--shadow-1);
+      transition: transform var(--transition-1), box-shadow var(--transition-1);
+      border: 1px solid var(--jet);
+    }
+
+    .project-item:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-3);
+    }
+
+
+    /*-----------------------------------*\
+     * #CONTACT PAGE STYLES
+    \*-----------------------------------*/
+    .contact .article-title { margin-bottom: 30px; }
+
+    /* Mapbox */
+    .mapbox {
+      position: relative;
+      height: 250px;
+      width: 100%;
+      border-radius: 16px;
+      margin-bottom: 30px;
+      overflow: hidden;
+      border: 1px solid var(--jet);
+    }
+
+    .mapbox figure { height: 100%; }
+
+    .mapbox iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      filter: grayscale(1) invert(1); /* Dark theme map */
+    }
+
+    /* Contact Form */
+    .contact-form { margin-bottom: 10px; }
+
+    .form-title { margin-bottom: 20px; }
+
+    .input-wrapper {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 25px;
+      margin-bottom: 25px;
+    }
+
+    .form-input {
+      color: var(--white-2);
+      font-size: var(--fs-6);
+      font-weight: var(--fw-400);
+      padding: 13px 20px;
+      border: 1px solid var(--jet);
+      border-radius: 14px;
+      outline: none;
+       /* Terminal look for inputs */
+      background-color: var(--terminal-bg) !important;
+      font-family: var(--ff-code);
+      border-color: var(--jet) !important;
+      transition: border-color var(--transition-1);
+    }
+
+    .form-input::placeholder { font-weight: var(--fw-500); }
+
+    .form-input:focus { border-color: var(--terminal-prompt); }
+
+    textarea.form-input {
+      min-height: 100px;
+      height: 120px;
+      max-height: 200px;
+      resize: vertical;
+      margin-bottom: 25px;
+    }
+
+    textarea.form-input::-webkit-resizer { display: none; }
+
+    .form-input:focus:invalid { border-color: var(--bittersweet-shimmer); }
+
+    .form-btn {
+      position: relative;
+      width: 100%;
+      background: var(--border-gradient-onyx);
+      color: var(--orange-yellow-crayola);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 20px;
+      border-radius: 14px;
+      font-size: var(--fs-6);
+      text-transform: capitalize;
+      box-shadow: var(--shadow-3);
+      z-index: 1;
+      transition: var(--transition-1);
+      /* Code font for button */
+       font-family: var(--ff-code) !important;
+    }
+
+    .form-btn::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      background: var(--bg-gradient-onyx);
+      border-radius: inherit;
+      z-index: -1;
+      transition: var(--transition-1);
+    }
+
+    .form-btn ion-icon { font-size: 16px; }
+
+    .form-btn:hover { background: var(--bg-gradient-yellow-1); }
+
+    .form-btn:hover::before { background: var(--bg-gradient-yellow-2); }
+
+    .form-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .form-btn:disabled:hover { background: var(--border-gradient-onyx); }
+
+    .form-btn:disabled:hover::before { background: var(--bg-gradient-onyx); }
+
+
+    /*-----------------------------------*\
+     * #RESPONSIVE
+    \*-----------------------------------*/
+
+    /**
+     * responsive for larger than 580px screen
+     */
+
+    @media (min-width: 580px) {
+
+      /* #REUSED STYLE */
+
+      .article-title { padding-bottom: 15px; }
+
+      .article-title::after {
+        width: 40px;
+        height: 5px;
+      }
+
+      /* #MAIN */
+      main {
+        margin: 30px;
+        margin-bottom: 75px; /* Adjust margin for fixed navbar */
+        display: flex;
+        gap: 25px;
+      }
+
+      .main-content {
+        width: 100%;
+        margin-top: 0;
+      }
+
+      /* #SIDEBAR */
+      .sidebar {
+        position: sticky;
+        top: 30px;
+        left: 0;
+        width: 120px;
+        max-height: 435px; /* Increased max height */
+        margin-bottom: 0;
+        padding: 20px; /* Increased padding */
+        z-index: 1;
+      }
+
+      .sidebar.active { max-height: 435px; } /* Keep same max height */
+
+      .sidebar-info {
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .avatar-box {
+        width: 120px; /* Make avatar larger */
+        height: 120px;
+        border-radius: 30px; /* Adjust border radius */
+        margin: auto;
+      }
+       .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+
+
+      .info-content .name { margin-bottom: 15px; }
+
+      .info-content .title { margin: auto; }
+
+      .info_more-btn { display: none; }
+
+      .sidebar-info_more {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .contacts-list { margin-bottom: -15px; }
+
+      .contact-item {
+         flex-direction: column;
+         text-align: center; /* Center text */
+         gap: 10px;
+      }
+       .contact-info { width: 100%; } /* Full width */
+
+      .separator {
+        margin: 30px 0;
+        width: 100%;
+      }
+
+      .social-list { justify-content: center; }
+
+      /* #NAVBAR */
+      .navbar {
+        border-radius: 20px;
+        position: absolute;
+        bottom: auto;
+        top: 0;
+        left: auto;
+        right: 0;
+        width: max-content;
+        border-radius: 0 20px;
+        padding: 0 20px;
+        box-shadow: none;
+      }
+
+      .navbar-list {
+        gap: 30px;
+        padding: 0 20px;
+      }
+
+      .navbar-link { font-weight: var(--fw-500); }
+
+      /* #ABOUT PAGE */
+      .service-list {
+        grid-template-columns: 1fr 1fr; /* Two columns for services */
+        gap: 25px;
+      }
+
+      /* #RESUME PAGE */
+       .timeline-list { margin-left: 65px; }
+       .timeline-item:not(:last-child)::before { left: -40px; }
+       .timeline-item::after { left: -43px; }
+
+      /* #PROJECTS PAGE */
+      .filter-list {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 25px;
+        padding-left: 5px;
+        margin-bottom: 30px;
+      }
+
+      .filter-item button {
+        color: var(--light-gray);
+        font-size: var(--fs-5);
+        transition: var(--transition-1);
+      }
+
+      .filter-item button:hover { color: var(--light-gray-70); }
+
+      .filter-item button.active { color: var(--orange-yellow-crayola); }
+
+      .filter-select-box { display: none; }
+
+      .project-list { grid-template-columns: 1fr 1fr; }
+
+      /* #CONTACT PAGE */
+      .input-wrapper { grid-template-columns: 1fr 1fr; }
+      .contact-form { margin-bottom: 0; }
+
+    }
+
+    /**
+     * responsive for larger than 768px screen
+     */
+
+    @media (min-width: 768px) {
+      /* #REUSED STYLE */
+       .sidebar,
+       article { padding: 30px; }
+       .content-card { padding: 30px; padding-top: 60px; }
+
+       /* #SIDEBAR */
+       .sidebar { width: 140px; } /* Slightly wider sidebar */
+
+       /* #RESUME PAGE */
+       .resume .header { margin-bottom: 30px; }
+
+       /* #PROJECTS PAGE */
+       .project-list { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+
+       /* Metrics Adjust */
+       .metrics-container { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+
+       /* Terminal Width */
+       .terminal-body { max-height: 300px; }
+    }
+
+    /**
+     * responsive for larger than 1024px screen
+     */
+
+    @media (min-width: 1024px) {
+      /* #REUSED STYLE */
+      .sidebar, article { border-radius: 20px; }
+
+      /* #MAIN */
+      main { margin-bottom: 60px; }
+
+      /* #SIDEBAR */
+      .sidebar { width: 320px; padding: 30px; } /* Wider sidebar */
+       .sidebar.active { max-height: 580px; } /* Increased max height */
+       .avatar-box { width: 120px; height: 120px; }
+       .contact-item { flex-direction: row; text-align: left; } /* Revert to row layout */
+       .contact-info { width: calc(100% - 46px); }
+       .separator { margin: 30px 0; }
+
+      /* #NAVBAR */
+       .navbar { width: max-content; left: 350px; /* Position next to sidebar */ }
+
+      /* #ABOUT PAGE */
+       .about-text { margin-bottom: 40px; }
+       .service-list { grid-template-columns: 1fr 1fr; gap: 30px; }
+
+       /* #RESUME PAGE */
+       .timeline-list { margin-left: 65px; }
+       .timeline-item:not(:last-child)::before { left: -40px; }
+       .timeline-item::after { left: -43px; }
+
+       /* #PROJECTS PAGE */
+       .project-list { grid-template-columns: 1fr 1fr 1fr; } /* Three columns */
+
+       /* #CONTACT PAGE */
+       .mapbox { height: 380px; border-radius: 18px; }
+       .contact-form { max-width: 700px; } /* Limit form width */
+
+       /* Metrics Adjust */
+       .metrics-container { grid-template-columns: repeat(4, 1fr); } /* Force 4 columns */
+    }
+
+    /**
+    * responsive for larger than 1250px screen
+    */
+
+    @media (min-width: 1250px) {
+
+      /* #MAIN */
+      main {
+        max-width: 1250px;
+        margin-inline: auto;
+        gap: 30px;
+      }
+
+      .main-content { width: calc(100% - 350px); /* Adjust based on sidebar width */ }
+
+       /* #SIDEBAR */
+       .sidebar { width: 320px; /* Keep consistent width */ }
+
+       /* #NAVBAR */
+       .navbar { left: 350px; /* Position relative to sidebar */ }
+
+    }
+
+  </style>
 </head>
 
 <body>
@@ -32,173 +1661,125 @@
   <!--
     - #MAIN
   -->
-
   <main>
 
     <!--
       - #SIDEBAR
     -->
-
     <aside class="sidebar" data-sidebar>
 
       <div class="sidebar-info">
-
         <figure class="avatar-box">
           <img src="./assets/images/varun-budati.jpeg" alt="Varun Budati" width="80">
         </figure>
-
         <div class="info-content">
           <h1 class="name" title="Varun Budati">Varun Budati</h1>
-
-          <p class="title">Undergraduate at Virginia Tech</p>
+          <p class="title">Quant Developer & Researcher</p>
         </div>
-
         <button class="info_more-btn" data-sidebar-btn>
           <span>Show Contacts</span>
-
           <ion-icon name="chevron-down"></ion-icon>
         </button>
-
       </div>
 
       <div class="sidebar-info_more">
-
         <div class="separator"></div>
-
         <ul class="contacts-list">
-
           <li class="contact-item">
-
             <div class="icon-box">
               <ion-icon name="mail-outline"></ion-icon>
             </div>
-
             <div class="contact-info">
               <p class="contact-title">Email</p>
-
               <a href="mailto:varunsbudati@gmail.com" class="contact-link">varunsbudati@gmail.com</a>
             </div>
-
           </li>
-
           <li class="contact-item">
-
             <div class="icon-box">
               <ion-icon name="phone-portrait-outline"></ion-icon>
             </div>
-
             <div class="contact-info">
               <p class="contact-title">Phone</p>
-
               <a href="tel:+15718300505" class="contact-link">+1 (571)-830-0505</a>
             </div>
-
           </li>
-
           <li class="contact-item">
-
-            <div class="icon-box">
-              <ion-icon name="calendar-outline"></ion-icon>
-            </div>
-
-            <div class="contact-info">
-              <p class="contact-title">LinkedIn</p>
-
-              <a href="https://www.linkedin.com/in/varun-budati/" class="contact-link">linkedin.com/varun-budati</a>
-            </div>
-
-          </li>
-
+             <div class="icon-box">
+                <!-- Changed icon from calendar to linkedin -->
+               <ion-icon name="logo-linkedin"></ion-icon>
+             </div>
+             <div class="contact-info">
+               <p class="contact-title">LinkedIn</p>
+               <!-- Updated link format -->
+               <a href="https://www.linkedin.com/in/varun-budati/" class="contact-link" target="_blank">linkedin.com/in/varun-budati</a>
+             </div>
+           </li>
           <li class="contact-item">
-
             <div class="icon-box">
               <ion-icon name="location-outline"></ion-icon>
             </div>
-
             <div class="contact-info">
               <p class="contact-title">Location</p>
-
               <address>Blacksburg, Virginia, USA</address>
             </div>
-
           </li>
-
         </ul>
-
         <div class="separator"></div>
-
         <ul class="social-list">
-
           <li class="social-item">
-            <a href="https://github.com/varunbudati" class="social-link">
+            <a href="https://github.com/varunbudati" class="social-link" target="_blank">
               <ion-icon name="logo-github"></ion-icon>
             </a>
           </li>
-
           <li class="social-item">
-            <a href="https://www.linkedin.com/in/varun-budati/" class="social-link">
+            <a href="https://www.linkedin.com/in/varun-budati/" class="social-link" target="_blank">
               <ion-icon name="logo-linkedin"></ion-icon>
             </a>
           </li>
-
-
         </ul>
-
       </div>
-
     </aside>
-
-
-
-
 
     <!--
       - #main-content
     -->
-
     <div class="main-content">
 
       <!--
         - #NAVBAR
       -->
-
       <nav class="navbar">
-
         <ul class="navbar-list">
-
           <li class="navbar-item">
-            <button class="navbar-link  active" data-nav-link>About</button>
+            <button class="navbar-link active" data-nav-link>About</button>
           </li>
-
           <li class="navbar-item">
             <button class="navbar-link" data-nav-link>Resume</button>
           </li>
-
           <li class="navbar-item">
             <button class="navbar-link" data-nav-link>Projects</button>
           </li>
-
           <li class="navbar-item">
             <button class="navbar-link" data-nav-link>Contact</button>
           </li>
-
         </ul>
-
       </nav>
-
-
-
-
 
       <!--
         - #ABOUT
       -->
-
-      <article class="about  active" data-page="about">
-
+      <article class="about active" data-page="about">
         <header>
-          <h2 class="h2 article-title">About me</h2>
+          <h2 class="h2 article-title">About Me</h2>
         </header>
+
+        <!-- Live market ticker -->
+        <div class="ticker-container" id="live-ticker">
+          <div class="ticker-wrap" id="ticker-wrap">
+            <!-- Placeholder for real-time data -->
+            <span class="ticker-item">Loading live data...</span>
+          </div>
+        </div>
 
         <section class="about-text">
           <p>I'm currently pursuing a Bachelor of Science in Computer Science at Virginia Tech, with a Minor in Mathematics and Finance. Throughout my academic journey, I have developed strong skills in problem-solving, analytical thinking, and programming, which have been integral to my studies and projects.</p>
@@ -206,591 +1787,742 @@
           <p>I am eager to apply my knowledge and enthusiasm for innovative technologies in a dynamic and growth-oriented environment. As I continue to explore and develop in this field, I aim to leverage my expertise to create impactful solutions and advancements that bridge finance and technology.</p>
         </section>
 
-
-        <!--
-          - service
-        -->
-
-        <section class="service">
-
-          <h3 class="h3 service-title">My Interests</h3>
-
-          <ul class="service-list">
-
-            <li class="service-item">
-
-              <div class="service-icon-box">
-                <img src="./assets/images/market.png
-                " alt="Stocks" width="50">
-              </div>
-
-              <div class="service-content-box">
-                <h4 class="h4 service-item-title">Financial Markets</h4>
-
-                <p class="service-item-text">
-                  The complexities of market behavior and the interplay between economic indicators, investor sentiment, and global events fascinate me. 
-                </p>
-              </div>
-
-            </li>
-
-            <li class="service-item">
-
-              <div class="service-icon-box">
-                <img src="./assets/images/math.png" alt="Math" width="50">
-              </div>
-
-              <div class="service-content-box">
-                <h4 class="h4 service-item-title">Mathematics and Probability</h4>
-
-                <p class="service-item-text">
-                  I find it fascinating how nearly everything in our lives is rooted in mathematical principles.
-                </p>
-              </div>
-
-            </li>
-
-            <li class="service-item">
-
-              <div class="service-icon-box">
-                <img src="./assets/images/code.png" alt="code" width="50">
-              </div>
-
-              <div class="service-content-box">
-                <h4 class="h4 service-item-title">Programming</h4>
-
-                <p class="service-item-text">
-                  The algorithmic and problem-solving components intrigue me, fueling my passion to continually explore and innovate through code.
-                </p>
-              </div>
-
-            </li>
-
-            <li class="service-item">
-
-              <div class="service-icon-box">
-                <img src="./assets/images/guitar.png" alt="guitar" width="50">
-              </div>
-
-              <div class="service-content-box">
-                <h4 class="h4 service-item-title">Music</h4>
-
-                <p class="service-item-text">
-                  Playing the guitar allows me to express my creativity and relax.
-              </div>
-
-            </li>
-
-          </ul>
-
-        </section>
-       <!--
-          - testimonials
-        -->
-
-
-        <!--
-          - testimonials modal
-        -->
-
-        <div class="modal-container" data-modal-container>
-
-          <div class="overlay" data-overlay></div>
-
-          <section class="testimonials-modal">
-
-            <button class="modal-close-btn" data-modal-close-btn>
-              <ion-icon name="close-outline"></ion-icon>
-            </button>
-
-            <div class="modal-img-wrapper">
-              <figure class="modal-avatar-box">
-                <img src="./assets/images/avatar-1.png" alt="" width="0" data-modal-img>
-              </figure>
-
-              <img src="./assets/images/icon-quote.svg" alt="quote icon">
+        <!-- Terminal display showcasing skills -->
+        <div class="terminal">
+          <div class="terminal-header">
+            <div class="terminal-buttons">
+              <div class="terminal-button red"></div>
+              <div class="terminal-button yellow"></div>
+              <div class="terminal-button green"></div>
             </div>
-
-            <div class="modal-content">
-
-              <h4 class="h3 modal-title" data-modal-title>Daniel lewis</h4>
-
-              <time datetime="2021-06-14">14 June, 2021</time>
-
-              <div data-modal-text>
-                <p>
-                </p>
-              </div>
-
-            </div>
-
-          </section>
-
+            <div class="terminal-title">varun@quant-dev:~/info$</div>
+          </div>
+          <div class="terminal-body" id="about-terminal-body">
+            <div class="terminal-line"><span class="terminal-prompt">varun@quant-dev:~/info$</span><span class="terminal-command"> whoami</span></div>
+            <div class="terminal-line terminal-output">Varun Budati</div>
+            <div class="terminal-line"><span class="terminal-prompt">varun@quant-dev:~/info$</span><span class="terminal-command"> ./get_status.sh</span></div>
+            <div class="terminal-line terminal-output">Status: BS Computer Science @ Virginia Tech</div>
+            <div class="terminal-line terminal-output">Focus: Quantitative Finance, Software Development</div>
+            <div class="terminal-line terminal-output">Minor: Mathematics, Finance</div>
+            <div class="terminal-line"><span class="terminal-prompt">varun@quant-dev:~/info$</span><span class="terminal-command"> cat core_interests.txt</span></div>
+            <div class="terminal-line terminal-output">> Algorithmic Trading</div>
+            <div class="terminal-line terminal-output">> High-Frequency Trading (HFT)</div>
+            <div class="terminal-line terminal-output">> Machine Learning in Finance</div>
+            <div class="terminal-line terminal-output">> Financial Modeling & Simulation</div>
+            <div class="terminal-line terminal-output">> Software Architecture for Trading Systems</div>
+            <div class="terminal-line"><span class="terminal-prompt">varun@quant-dev:~/info$</span><span class="terminal-command"> echo $MOTIVATION</span></div>
+            <div class="terminal-line terminal-output">Driven by the synergy between technology and finance. Seeking opportunities to innovate and solve complex problems in the quant space.</div>
+            <div class="terminal-line"><span class="terminal-prompt">varun@quant-dev:~/info$</span><span class="terminal-command"> _</span></div>
+          </div>
         </div>
 
+        <!-- Key metrics -->
+        <div class="metrics-container">
+          <div class="metric-card">
+            <div class="metric-title">Python/Quant Libs</div>
+            <div class="metric-value">85%</div>
+            <div class="metric-change metric-up">
+              <i class="fas fa-chart-line"></i>
+              <span>Active Learning</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Project Backtests</div>
+            <div class="metric-value">15+</div>
+            <div class="metric-change metric-up">
+               <i class="fas fa-flask"></i>
+              <span>Avg. Sharpe: 1.2</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">Research Papers Read</div>
+            <div class="metric-value">115+</div>
+             <div class="metric-change metric-up">
+              <i class="fas fa-book-open"></i>
+              <span>Focus: Market Microstructure</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-title">GitHub Commits</div>
+            <div class="metric-value">1000+</div>
+            <div class="metric-change metric-up">
+              <i class="fab fa-github"></i>
+              <span>Active Repos: 5</span>
+            </div>
+          </div>
+        </div>
 
-        <!--
-          - clients
-        -->
+        <!-- Interests Section -->
+        <section class="service">
+          <h3 class="h3 service-title">My Interests</h3>
+          <ul class="service-list">
+            <li class="service-item">
+              <div class="service-icon-box">
+                <img src="./assets/images/market.png" alt="Financial Markets" width="50">
+              </div>
+              <div class="service-content-box">
+                <h4 class="h4 service-item-title">Financial Markets</h4>
+                <p class="service-item-text">
+                  Analyzing market dynamics, microstructure, and the interplay of global events fascinates me. Always exploring new data sources and patterns.
+                </p>
+              </div>
+            </li>
+            <li class="service-item">
+              <div class="service-icon-box">
+                <img src="./assets/images/math.png" alt="Mathematics & Probability" width="50">
+              </div>
+              <div class="service-content-box">
+                <h4 class="h4 service-item-title">Mathematics & Probability</h4>
+                <p class="service-item-text">
+                  Applying stochastic calculus, optimization, and statistical modeling to financial problems is a core passion.
+                </p>
+              </div>
+            </li>
+            <li class="service-item">
+              <div class="service-icon-box">
+                <img src="./assets/images/code.png" alt="Programming & Algorithms" width="50">
+              </div>
+              <div class="service-content-box">
+                <h4 class="h4 service-item-title">Programming & Algorithms</h4>
+                <p class="service-item-text">
+                   Building efficient, scalable systems and implementing complex algorithms in Python, C++, and other relevant languages.
+                </p>
+              </div>
+            </li>
+            <li class="service-item">
+              <div class="service-icon-box">
+                <img src="./assets/images/guitar.png" alt="Music" width="50">
+              </div>
+              <div class="service-content-box">
+                <h4 class="h4 service-item-title">Music (Guitar)</h4>
+                <p class="service-item-text">
+                  A creative outlet that helps maintain balance and perspective. Exploring patterns in music often inspires new approaches to coding.
+                </p>
+              </div>
+            </li>
+          </ul>
+        </section>
 
-       
+        <!-- Code snippet showcase -->
+        <div class="code-snippet">
+          <div class="code-header">
+            <div class="code-title">rsi_strategy_example.py</div>
+            <div class="code-actions">
+              <i class="fas fa-copy" title="Copy code"></i>
+              <i class="fas fa-expand" title="Expand"></i>
+            </div>
+          </div>
+          <div class="line-numbers">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15</div>
+          <div class="code-content">
+            <pre><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+<span class="keyword">import</span> ta <span class="comment"># Technical Analysis Library</span>
 
+<span class="keyword">class</span> <span class="class">MeanReversionRSI</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, data: pd.DataFrame, rsi_period<span class="operator">=</span><span class="number">14</span>, ma_period<span class="operator">=</span><span class="number">50</span>):
+        self.df <span class="operator">=</span> data.copy()
+        self.rsi_period <span class="operator">=</span> rsi_period
+        self.ma_period <span class="operator">=</span> ma_period
 
+    <span class="keyword">def</span> <span class="function">calculate_indicators</span>(self):
+        self.df[<span class="string">'rsi'</span>] <span class="operator">=</span> ta.momentum.RSIIndicator(self.df[<span class="string">'Close'</span>], window<span class="operator">=</span>self.rsi_period).rsi()
+        self.df[<span class="string">'sma'</span>] <span class="operator">=</span> ta.trend.SMAIndicator(self.df[<span class="string">'Close'</span>], window<span class="operator">=</span>self.ma_period).sma_indicator()
+        <span class="comment"># ... signal generation logic ...</span>
+    <span class="comment"># ... backtesting methods ...</span></pre>
+          </div>
+        </div>
       </article>
-
-
-
 
       <!--
         - #RESUME
       -->
-
-      
       <article class="resume" data-page="resume">
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            .header {
-                display: flex;
-                align-items: center;
-                
-            }
-    
-            .download-button {
-                background-color: #f0c040;
-                border: none;
-                padding: 10px 20px;
-                margin-left: 20px;
-                cursor: pointer;
-                border-radius: 5px;
-                text-decoration: none;
-                color: #fff;
-                font-weight: bold;
-                margin-top: -40px;
-            }
-    
-            .download-button:hover {
-                background-color: #e5b135;
-            }
-            .pdf-preview {
-              width: 50%; /* Adjust width as needed */
-              height: 600px; /* Adjust height as needed */
-              border: 1px solid #ccc;
-              margin-left: 20px;
-            }
-        </style>
-    </head>
-    <body>
-    
-    <div class="header">
-        <header>
-          <h2 class="h2 article-title">Resume</h2>
-        </header>
-        <a href="assets/images/resume.pdf" class="download-button" download>Download</a>
-    </div>
-        
-        
-         <section class="timeline">
-          
+        <div class="header">
+            <header>
+              <h2 class="h2 article-title">Resume</h2>
+            </header>
+            <!-- Added Font Awesome icon to download button -->
+            <a href="assets/images/resume.pdf" class="download-button" download>
+                <i class="fas fa-download"></i> Download PDF
+            </a>
+        </div>
 
+        <!-- --- Find this section within the Resume <article> --- -->
+
+<!-- START: Skill Progression Terminal Log -->
+<div class="terminal" id="skill-progression-log">
+  <div class="terminal-header">
+    <div class="terminal-buttons">
+      <div class="terminal-button red"></div>
+      <div class="terminal-button yellow"></div>
+      <div class="terminal-button green"></div>
+    </div>
+    <div class="terminal-title">varun@quant-dev:~/logs$ tail -f skill_progression.log</div>
+  </div>
+  <div class="terminal-body" id="skill-log-body">
+    <div class="terminal-line terminal-output">[SYSTEM] Initializing Skill Matrix...</div>
+    <div class="terminal-line terminal-output">[~2019-2021] [INIT] Core Programming: Python Fundamentals</div>
+    <div class="terminal-line terminal-output">[Jun 2021]   [INIT] Web Development: HTML, CSS, JavaScript (Internship)</div>
+    <div class="terminal-line terminal-output">[Aug 2023]   [FOCUS] Formal CS @ VT: Java, C/C++, Data Structures, Algorithms</div>
+    <div class="terminal-line terminal-output">[Aug 2023]   [FOCUS] Foundational Math & Finance Minor Started</div>
+    <div class="terminal-line terminal-output">[Early 2024] [DEEPEN] Python Ecosystem: NumPy, Pandas, Matplotlib (Coursework/Self-Study)</div>
+    <div class="terminal-line terminal-output">[Mar 2024]   [APPLY] Research Methodologies, Literature Review (REACH Lab)</div>
+    <div class="terminal-line terminal-output">[May 2024]   [APPLY] Quant Concepts: Technical Indicators (MACD, RSI), Backtesting (Project)</div>
+    <div class="terminal-line terminal-output">[Jun 2024]   [APPLY] Financial Modeling: Black-Scholes, Options Greeks, Newton-Raphson (Project)</div>
+    <div class="terminal-line terminal-output">[Jul 2024]   [DEEPEN] Data Visualization: Advanced Matplotlib, Seaborn (Projects)</div>
+    <div class="terminal-line terminal-output">[Aug 2024]   [APPLY] Data Analysis & ML: SciPy, Statsmodels, API Integration, Sklearn (Project)</div>
+    <div class="terminal-line terminal-output">[Oct 2024]   [FOCUS] Quant Research: Market Microstructure, Order Execution Algos (Dataism Lab)</div>
+    <div class="terminal-line terminal-output">[Oct 2024]   [APPLY] Portfolio Theory, Risk Analysis (FinTech Club)</div>
+    <div class="terminal-line terminal-output">[Ongoing]    [DEEPEN] SQL, Matlab, Advanced Libraries (Sklearn, Plotly), Cloud/Docker (Exposure)</div>
+    <div class="terminal-line terminal-output">[Future]     [TARGET] Advanced ML/AI in Finance, HFT Concepts, C++ Performance Tuning</div>
+    <div class="terminal-line terminal-output">[SYSTEM] Monitoring skill evolution...</div>
+    <div class="terminal-line"><span class="terminal-prompt">varun@quant-dev:~/logs$</span><span class="terminal-command"> _</span></div>
+  </div>
+</div>
+<!-- END: Skill Progression Terminal Log -->
+
+<!-- --- Rest of the Resume <article> remains the same --- -->
+
+        <section class="timeline">
           <div class="title-wrapper">
             <div class="icon-box">
-              <ion-icon name="book-outline"></ion-icon>
+              <ion-icon name="school-outline"></ion-icon> <!-- Changed icon -->
             </div>
-
             <h3 class="h3">Education</h3>
           </div>
-
           <ol class="timeline-list">
-
             <li class="timeline-item">
-
               <h4 class="h4 timeline-item-title">Virginia Tech</h4>
-
               <span>Aug 2023 — Present</span>
-
-              <p class="timeline-text">
-               Bachelor of Science in Computer Science with a Minor in Mathematics and Finance
-              </p>
-              <p class="timeline-text">
-                GPA: 3.51 / 4.0 <br>
-                In-Major GPA: 3.65 / 4.0
-               </p>
-
-
+              <p class="timeline-text">Bachelor of Science, Computer Science</p>
+              <p class="timeline-text">Minor: Mathematics, Finance</p>
+              <p class="timeline-text">GPA: 3.51 / 4.0 | In-Major GPA: 3.65 / 4.0</p>
             </li>
-
-           
             <li class="timeline-item">
-
               <h4 class="h4 timeline-item-title">IES Bhavans, Kuwait</h4>
-
               <span>Jan 2010 — May 2023</span>
-
-              <p class="timeline-text">
-                Senior School Certificate Examination in Computer Science GPA: 91.2/100
-              </p>
-                <p class="timeline-text">  
-                Secondary School Examination in Information Technology GPA: 94.3/100
-              </p>
-
+              <p class="timeline-text">Senior School Certificate (CBSE), Computer Science: 91.2%</p>
+              <p class="timeline-text">Secondary School Examination (CBSE), Information Technology: 94.3%</p>
             </li>
-
           </ol>
-
         </section>
 
         <section class="timeline">
-
           <div class="title-wrapper">
             <div class="icon-box">
-              <ion-icon name="book-outline"></ion-icon>
+               <!-- Changed icon -->
+              <ion-icon name="briefcase-outline"></ion-icon>
             </div>
-
             <h3 class="h3">Experience</h3>
           </div>
-
           <ol class="timeline-list">
             <li class="timeline-item">
-
-              <h4 class="h4 timeline-item-title">Quantitative Researcher, DLQF Lab At Virginia Tech</h4>
-
+              <h4 class="h4 timeline-item-title">Quantitative Researcher, DLQF Lab @ Virginia Tech</h4>
               <span>October 2024 — Present</span>
-
-              <p class="timeline-text">• Collaborating with two researchers on Order Execution & Optimization research, focusing on market microstructure analysis and
-                implementation of trading strategies
-                 </p>
-
-                <p class="timeline-text">• Implementing various execution algorithms and optimization methods in Python to understand market impact and transaction costs
-                </p>
-              <p class="timeline-text">• Conducting comprehensive literature review on market making strategies and optimal execution techniques
-                
-              </p>
-              <p class="timeline-text">• Developing quantitative models to analyze trade execution efficiency and market dynamics using statistical methods and Python
-              </p>
-
+              <p class="timeline-text">• Researching Order Execution & Optimization, focusing on market microstructure.</p>
+              <p class="timeline-text">• Implementing execution algorithms (e.g., VWAP, TWAP, Almgren-Chriss) in Python.</p>
+              <p class="timeline-text">• Analyzing market impact, transaction costs, and optimal execution strategies.</p>
+              <p class="timeline-text">• Developing quantitative models using statistical methods and Python libraries (NumPy, Pandas, SciPy).</p>
             </li>
-
-            <li class="timeline-item">
-
-              <h4 class="h4 timeline-item-title">Research Assistant - REACH Lab At Virginia Tech</h4>
-
-              <span>March 2024 — Present</span>
-
-              <p class="timeline-text">
-                • Conducted an extensive literature review under the leadership of Dr. Ihudiya Finda Williams, on a focused project on
-                Rural Computer Science Education. </p>
-
-                <p class="timeline-text">• Synthesized over 80+ articles and papers across libraries in computing, education in reparation of $500,000 National Science
-              Foundation grant.</p>
-              <p class="timeline-text">• Trained 6 research assistants on different methods of searching through databases, provided tools, methodologies for prompt queries and Literature Reviews.
-              </p>
-
-            </li>
-
-            <li class="timeline-item">
-
-              <h4 class="h4 timeline-item-title">Web Developer Intern</h4>
-
-              <span>June 2021 — September 2021</span>
-
-              <p class="timeline-text">
-              • Designed and created 5 interactive web-pages for young museum visitors, featuring sequential exhibit zones with QR codes
-              for historical information about Kuwait.</p>
-              <p class="timeline-text">• Developed 8 puzzles and games using cardboard pieces and silhouettes </p>
-                <p class="timeline-text">• Designed 3 interactive tools like query boards/trivia questions to enhance children’s learning of Kuwait and Al-Sabah
-              exhibit history.
-              </p>
-
-            </li>
-
-            
-
+             <li class="timeline-item">
+               <h4 class="h4 timeline-item-title">Research Assistant, REACH Lab @ Virginia Tech</h4>
+               <span>March 2024 — Present</span>
+               <p class="timeline-text">• Conducted extensive literature review on Rural CS Education for NSF grant proposal ($500k).</p>
+               <p class="timeline-text">• Synthesized 80+ articles, identifying key themes and research gaps.</p>
+               <p class="timeline-text">• Trained 6 research assistants on database searching and literature review methodologies.</p>
+             </li>
+             <li class="timeline-item">
+               <h4 class="h4 timeline-item-title">Web Developer Intern, Sheikh Abdullah Al Salem Cultural Centre</h4>
+               <span>June 2021 — September 2021</span>
+               <p class="timeline-text">• Designed/created 5 interactive web pages for museum exhibits using HTML, CSS, JS.</p>
+               <p class="timeline-text">• Developed puzzles/games and interactive tools (e.g., trivia) to enhance visitor engagement.</p>
+             </li>
           </ol>
-
         </section>
 
-        <section class="skill">
-
-          <h3 class="h3 skills-title">My skills</h3>
-
-          <ul class="skills-list content-card">
-
-            <li class="skills-item">
-
-              <div class="title-wrapper">
-                <h5 class="h5">Python</h5>
-                <data value="85">85%</data>
-              </div>
-
-              <div class="skill-progress-bg">
-                <div class="skill-progress-fill" style="width: 85%;"></div>
-              </div>
-
-            </li>
-
-            <li class="skills-item">
-
-              <div class="title-wrapper">
-                <h5 class="h5">Java</h5>
-                <data value="50">50%</data>
-              </div>
-
-              <div class="skill-progress-bg">
-                <div class="skill-progress-fill" style="width: 50%;"></div>
-              </div>
-
-            </li>
-
-            <li class="skills-item">
-
-              <div class="title-wrapper">
-                <h5 class="h5">SQL</h5>
-                <data value="50">50%</data>
-              </div>
-
-              <div class="skill-progress-bg">
-                <div class="skill-progress-fill" style="width: 50%;"></div>
-              </div>
-
-            </li>
-
-            <li class="skills-item">
-
-              <div class="title-wrapper">
-                <h5 class="h5">C/C++</h5>
-                <data value="25">25%</data>
-              </div>
-
-              <div class="skill-progress-bg">
-                <div class="skill-progress-fill" style="width: 25%;"></div>
-              </div>
-
-            </li>
-
-            <li class="skills-item">
-
-              <div class="title-wrapper">
-                <h5 class="h5">Matlab</h5>
-                <data value="50">50%</data>
-              </div>
-
-              <div class="skill-progress-bg">
-                <div class="skill-progress-fill" style="width: 50%;"></div>
-              </div>
-
-            </li>
-
-          </ul>
-
-        </section>
-
+        <!-- Terminal-style skill listing -->
+        <div class="terminal">
+          <div class="terminal-header">
+            <div class="terminal-buttons">
+              <div class="terminal-button red"></div>
+              <div class="terminal-button yellow"></div>
+              <div class="terminal-button green"></div>
+            </div>
+            <div class="terminal-title">varun@quant-dev:~/bin$ ./show_skills.py</div>
+          </div>
+          <div class="terminal-body" id="resume-terminal-body">
+             <div class="terminal-line terminal-output">--- Languages ---</div>
+             <div class="terminal-line terminal-output">[Python]       ########## 85% ##########</div>
+             <div class="terminal-line terminal-output">[Java]         ######     50% ######</div>
+             <div class="terminal-line terminal-output">[SQL]          ######     50% ######</div>
+             <div class="terminal-line terminal-output">[MATLAB]       ######     50% ######</div>
+             <div class="terminal-line terminal-output">[C/C++]        ###        25% ###</div>
+             <div class="terminal-line terminal-output">--- Quant & Data Science ---</div>
+             <div class="terminal-line terminal-output">- NumPy, Pandas, SciPy, Matplotlib, Seaborn</div>
+             <div class="terminal-line terminal-output">- Scikit-learn (Regression, Classification, Clustering)</div>
+             <div class="terminal-line terminal-output">- TensorFlow, Keras, PyTorch (Basic Exposure)</div>
+             <div class="terminal-line terminal-output">- TA-Lib, QuantLib (Exposure)</div>
+             <div class="terminal-line terminal-output">- Financial Modeling, Time Series Analysis, Risk Management Concepts</div>
+             <div class="terminal-line terminal-output">--- Tools & Platforms ---</div>
+             <div class="terminal-line terminal-output">- Git, GitHub, Docker (Basic)</div>
+             <div class="terminal-line terminal-output">- Linux/Unix Environments</div>
+             <div class="terminal-line terminal-output">- Jupyter Notebooks, VS Code</div>
+             <div class="terminal-line terminal-output">- Bloomberg Terminal (Academic Exposure)</div>
+             <div class="terminal-line"><span class="terminal-prompt">varun@quant-dev:~/bin$</span><span class="terminal-command"> _</span></div>
+          </div>
+        </div>
       </article>
-
-
-
-
 
       <!--
         - #PROJECTS
       -->
-
       <article class="projects" data-page="projects">
-
         <header>
           <h2 class="h2 article-title">Projects</h2>
         </header>
 
         <section class="projects">
-
           <ul class="filter-list">
-
-            <li class="filter-item">
-              <button class="active" data-filter-btn>All</button>
-            </li>
-            <li class="filter-item">
-              <button data-filter-btn>Applications</button>
-            </li>
+            <li class="filter-item"><button class="active" data-filter-btn>All</button></li>
+            <li class="filter-item"><button data-filter-btn>Quant Finance</button></li>
+            <li class="filter-item"><button data-filter-btn>Machine Learning</button></li>
+            <li class="filter-item"><button data-filter-btn>Software Dev</button></li>
           </ul>
-
           <div class="filter-select-box">
-
             <button class="filter-select" data-select>
-
               <div class="select-value" data-selecct-value>Select category</div>
-
-              <div class="select-icon">
-                <ion-icon name="chevron-down"></ion-icon>
-              </div>
-
+              <div class="select-icon"><ion-icon name="chevron-down"></ion-icon></div>
             </button>
-
             <ul class="select-list">
-
-              <li class="select-item">
-                <button data-select-item>All</button>
-              </li>
-
-              <li class="select-item">
-                <button data-select-item>Applications</button>
-              </li>
+              <li class="select-item"><button data-select-item>All</button></li>
+              <li class="select-item"><button data-select-item>Quant Finance</button></li>
+              <li class="select-item"><button data-select-item>Machine Learning</button></li>
+              <li class="select-item"><button data-select-item>Software Dev</button></li>
             </ul>
-
           </div>
 
           <ul class="project-list">
-
-            <li class="project-item  active" data-filter-item data-category="applications">
-              <a href="https://www.linkedin.com/in/varun-budati/details/projects/">
-
+            <li class="project-item active" data-filter-item data-category="machine learning">
+              <a href="https://www.linkedin.com/in/varun-budati/details/projects/" target="_blank">
+                <div class="new-badge">In Progress</div>
                 <figure class="project-img">
-                  <div class="project-item-icon-box">
-                    <ion-icon name="eye-outline"></ion-icon>
-                  </div>
-
-                  <img src="./assets/images/sports_betting.gif" alt="task manager" loading="lazy">
+                  <div class="project-item-icon-box"><ion-icon name="eye-outline"></ion-icon></div>
+                  <img src="./assets/images/sports_betting.gif" alt="Sports Betting Algorithm" loading="lazy">
                 </figure>
-
                 <h3 class="project-title">Sports Betting Algorithm & Analytics System</h3>
-
-                <p class="project-category">Applications</p>
-
+                <p class="project-category">Machine Learning / Data Analysis</p>
+                <div class="project-tech-stack">
+                  <span class="tech-tag">Python</span>
+                  <span class="tech-tag">TensorFlow</span>
+                  <span class="tech-tag">Pandas</span>
+                  <span class="tech-tag">Scikit-learn</span>
+                  <span class="tech-tag">API Integration</span>
+                </div>
               </a>
             </li>
-
-            <li class="project-item  active" data-filter-item data-category="applications">
-              <a href="https://github.com/varunbudati/Almgren-Chriss-model">
-
+            <li class="project-item active" data-filter-item data-category="quant finance">
+              <a href="https://github.com/varunbudati/Almgren-Chriss-model" target="_blank">
                 <figure class="project-img">
-                  <div class="project-item-icon-box">
-                    <ion-icon name="eye-outline"></ion-icon>
-                  </div>
-
-                  <img src="./assets/images/Almgren_Chriss_Model.gif" alt="task manager" loading="lazy">
+                  <div class="project-item-icon-box"><ion-icon name="eye-outline"></ion-icon></div>
+                  <img src="./assets/images/Almgren_Chriss_Model.gif" alt="Optimal Trading Execution" loading="lazy">
                 </figure>
-
-                <h3 class="project-title">Optimal Trading Execution System with Reinforcement Learning</h3>
-
-                <p class="project-category">Applications</p>
-
+                <h3 class="project-title">Optimal Trading Execution (Almgren-Chriss)</h3>
+                <p class="project-category">Quant Finance / Optimization</p>
+                 <div class="project-tech-stack">
+                   <span class="tech-tag">Python</span>
+                   <span class="tech-tag">NumPy</span>
+                   <span class="tech-tag">SciPy</span>
+                   <span class="tech-tag">Market Microstructure</span>
+                   <span class="tech-tag">Reinforcement Learning (Exploration)</span>
+                 </div>
               </a>
             </li>
-
-            <li class="project-item  active" data-filter-item data-category="applications">
-              <a href="https://github.com/varunbudati/MACD-Trading-Strategy-Visualizer">
-
+             <li class="project-item active" data-filter-item data-category="quant finance">
+              <a href="https://github.com/varunbudati/MACD-Trading-Strategy-Visualizer" target="_blank">
                 <figure class="project-img">
-                  <div class="project-item-icon-box">
-                    <ion-icon name="eye-outline"></ion-icon>
-                  </div>
-
-                  <img src="./assets/images/MACD.gif" alt="task manager" loading="lazy">
+                  <div class="project-item-icon-box"><ion-icon name="eye-outline"></ion-icon></div>
+                  <img src="./assets/images/MACD.gif" alt="MACD Visualizer" loading="lazy">
                 </figure>
-
                 <h3 class="project-title">MACD Trading Strategy Visualizer</h3>
-
-                <p class="project-category">Applications</p>
-
+                <p class="project-category">Quant Finance / Visualization</p>
+                 <div class="project-tech-stack">
+                   <span class="tech-tag">Python</span>
+                   <span class="tech-tag">Pandas</span>
+                   <span class="tech-tag">Matplotlib</span>
+                   <span class="tech-tag">TA-Lib</span>
+                   <span class="tech-tag">Backtesting</span>
+                 </div>
               </a>
             </li>
-
-    
-        
-
-            <li class="project-item  active" data-filter-item data-category="applications">
-              <a href="https://github.com/varunbudati/Black-Sholes-Model">
-
+            <li class="project-item active" data-filter-item data-category="quant finance">
+              <a href="https://github.com/varunbudati/Black-Sholes-Model" target="_blank">
                 <figure class="project-img">
-                  <div class="project-item-icon-box">
-                    <ion-icon name="eye-outline"></ion-icon>
-                  </div>
-
-                  <img src="./assets/images/BSM_options.gif" alt="task manager" loading="lazy">
+                  <div class="project-item-icon-box"><ion-icon name="eye-outline"></ion-icon></div>
+                  <img src="./assets/images/BSM_options.gif" alt="Black-Scholes Calculator" loading="lazy">
                 </figure>
-
-                <h3 class="project-title">Options Pricing Calculator & Graph Using the Black-Scholes Model</h3>
-
-                <p class="project-category">Applications</p>
-
+                <h3 class="project-title">Black-Scholes Options Pricing Calculator</h3>
+                <p class="project-category">Quant Finance / Derivatives</p>
+                <div class="project-tech-stack">
+                  <span class="tech-tag">Python</span>
+                  <span class="tech-tag">NumPy</span>
+                  <span class="tech-tag">SciPy.stats</span>
+                  <span class="tech-tag">Options Theory</span>
+                   <span class="tech-tag">Matplotlib</span>
+                </div>
               </a>
             </li>
-
-            
-
+             <!-- Add more projects here following the same structure -->
+             <!-- Example for a Software Dev project -->
+             <!--
+             <li class="project-item active" data-filter-item data-category="software dev">
+               <a href="#" target="_blank">
+                 <figure class="project-img">
+                   <div class="project-item-icon-box"><ion-icon name="eye-outline"></ion-icon></div>
+                   <img src="./assets/images/placeholder_project.png" alt="Placeholder Project" loading="lazy">
+                 </figure>
+                 <h3 class="project-title">Portfolio Website v2</h3>
+                 <p class="project-category">Software Dev / Web Development</p>
+                 <div class="project-tech-stack">
+                   <span class="tech-tag">HTML5</span>
+                   <span class="tech-tag">CSS3</span>
+                   <span class="tech-tag">JavaScript</span>
+                   <span class="tech-tag">Responsive Design</span>
+                 </div>
+               </a>
+             </li>
+             -->
           </ul>
-
         </section>
 
+        <!-- Code snippet with algorithm preview -->
+        <div class="code-snippet">
+          <div class="code-header">
+            <div class="code-title">black_scholes_greeks.py</div>
+            <div class="code-actions">
+              <i class="fas fa-copy" title="Copy code"></i>
+              <i class="fas fa-expand" title="Expand"></i>
+            </div>
+          </div>
+          <div class="line-numbers">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18</div>
+          <div class="code-content">
+            <pre><span class="keyword">import</span> numpy <span class="keyword">as</span> np
+<span class="keyword">from</span> scipy.stats <span class="keyword">import</span> norm
+
+<span class="keyword">class</span> <span class="class">BlackScholesModel</span>:
+    <span class="keyword">def</span> <span class="function">_d1</span>(self, S, K, T, r, sigma):
+        <span class="keyword">return</span> (np.log(S / K) + (r + <span class="number">0.5</span> * sigma ** <span class="number">2</span>) * T) / (sigma * np.sqrt(T))
+
+    <span class="keyword">def</span> <span class="function">_d2</span>(self, S, K, T, r, sigma):
+        <span class="keyword">return</span> self.<span class="function">_d1</span>(S, K, T, r, sigma) - sigma * np.sqrt(T)
+
+    <span class="keyword">def</span> <span class="function">call_price</span>(self, S, K, T, r, sigma):
+        d1 <span class="operator">=</span> self.<span class="function">_d1</span>(S, K, T, r, sigma)
+        d2 <span class="operator">=</span> self.<span class="function">_d2</span>(S, K, T, r, sigma)
+        <span class="keyword">return</span> S * norm.cdf(d1) - K * np.exp(-r * T) * norm.cdf(d2)
+
+    <span class="keyword">def</span> <span class="function">put_price</span>(self, S, K, T, r, sigma):
+        d1 <span class="operator">=</span> self.<span class="function">_d1</span>(S, K, T, r, sigma)
+        d2 <span class="operator">=</span> self.<span class="function">_d2</span>(S, K, T, r, sigma)
+        <span class="keyword">return</span> K * np.exp(-r * T) * norm.cdf(-d2) - S * norm.cdf(-d1)
+
+    <span class="keyword">def</span> <span class="function">delta</span>(self, S, K, T, r, sigma, option_type<span class="operator">=</span><span class="string">'call'</span>):
+        d1 <span class="operator">=</span> self.<span class="function">_d1</span>(S, K, T, r, sigma)
+        <span class="keyword">if</span> option_type <span class="operator">==</span> <span class="string">'call'</span>: <span class="keyword">return</span> norm.cdf(d1)
+        <span class="keyword">else</span>: <span class="keyword">return</span> norm.cdf(d1) - <span class="number">1</span>
+    <span class="comment"># ... other Greeks (Gamma, Vega, Theta, Rho) ...</span></pre>
+          </div>
+        </div>
       </article>
-
-
-
-
-
-
 
       <!--
         - #CONTACT
       -->
-
       <article class="contact" data-page="contact">
-
         <header>
           <h2 class="h2 article-title">Contact</h2>
         </header>
 
-        
+        <!-- Console-like connection status -->
+        <div class="terminal">
+          <div class="terminal-header">
+            <div class="terminal-buttons">
+              <div class="terminal-button red"></div>
+              <div class="terminal-button yellow"></div>
+              <div class="terminal-button green"></div>
+            </div>
+            <div class="terminal-title">varun@quant-dev:~/network$ ./check_connectivity.sh --target=varun.budati</div>
+          </div>
+          <div class="terminal-body" id="contact-terminal-body">
+             <div class="terminal-line terminal-output">Attempting connection to varun.budati...</div>
+             <div class="terminal-line terminal-output">Resolving DNS... OK</div>
+             <div class="terminal-line terminal-output">Pinging host...</div>
+             <div class="terminal-line terminal-output">PING varun.budati (127.0.0.1): 56 data bytes</div>
+             <div class="terminal-line terminal-output">64 bytes from 127.0.0.1: icmp_seq=0 ttl=64 time=0.042 ms</div>
+             <div class="terminal-line terminal-output">64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.051 ms</div>
+             <div class="terminal-line terminal-output">64 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time=0.048 ms</div>
+             <div class="terminal-line terminal-output">--- varun.budati ping statistics ---</div>
+             <div class="terminal-line terminal-output">3 packets transmitted, 3 packets received, 0.0% packet loss</div>
+             <div class="terminal-line terminal-output">round-trip min/avg/max/stddev = 0.042/0.047/0.051/0.004 ms</div>
+             <div class="terminal-line terminal-output">Connection Status: [ONLINE] - Ready for inquiries.</div>
+             <div class="terminal-line terminal-output">Use the form below or contact directly via Email/LinkedIn.</div>
+             <div class="terminal-line"><span class="terminal-prompt">varun@quant-dev:~/network$</span><span class="terminal-command"> _</span></div>
+          </div>
+        </div>
+
         <section class="mapbox" data-mapbox>
           <figure>
-            <iframe width="100%" height="600" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=Virginia%20Tech+(Virginia%20Tech)&amp;t=&amp;z=12&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"><a href="https://www.gps.ie/">gps systems</a></iframe>
+            <iframe width="100%" height="600" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?width=100%25&height=600&hl=en&q=Virginia%20Tech%20Blacksburg+(Virginia%20Tech)&t=&z=14&ie=UTF8&iwloc=B&output=embed" title="Location of Virginia Tech on Google Maps"></iframe>
           </figure>
         </section>
 
         <section class="contact-form">
-
-          <h3 class="h3 form-title">Contact Me</h3>
-
+          <h3 class="h3 form-title">Contact Form</h3>
           <form action="#" class="form" data-form>
-
             <div class="input-wrapper">
-              <input type="text" name="fullname" class="form-input" placeholder="Full name" required data-form-input>
-
-              <input type="email" name="email" class="form-input" placeholder="Email address" required data-form-input>
+              <input type="text" name="fullname" class="form-input" placeholder="Full Name" required data-form-input>
+              <input type="email" name="email" class="form-input" placeholder="Email Address" required data-form-input>
             </div>
-
-            <textarea name="message" class="form-input" placeholder="Your Message" required data-form-input></textarea>
-
+            <textarea name="message" class="form-input" placeholder="Your Message / Inquiry" required data-form-input></textarea>
             <button class="form-btn" type="submit" disabled data-form-btn>
               <ion-icon name="paper-plane"></ion-icon>
               <span>Send Message</span>
             </button>
-
           </form>
-
         </section>
-
       </article>
 
-    </div>
+    </div><!-- end main-content -->
 
   </main>
 
-
-
-
-
-
   <!--
-    - custom js link
+    - custom js link (Assume this contains the sidebar/nav logic)
   -->
-  <script src="./assets/js/script.js"></script>
+  <script>
+    'use strict';
 
-  <!--
-    - ionicon link
-  -->
-  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    // element toggle function
+    const elementToggleFunc = function (elem) { elem.classList.toggle("active"); }
+
+    // sidebar variables
+    const sidebar = document.querySelector("[data-sidebar]");
+    const sidebarBtn = document.querySelector("[data-sidebar-btn]");
+
+    // sidebar toggle functionality for mobile
+    sidebarBtn.addEventListener("click", function () { elementToggleFunc(sidebar); });
+
+    // page navigation variables
+    const navigationLinks = document.querySelectorAll("[data-nav-link]");
+    const pages = document.querySelectorAll("[data-page]");
+
+    // add event listeners to navigation links
+    for (let i = 0; i < navigationLinks.length; i++) {
+      navigationLinks[i].addEventListener("click", function () {
+        for (let j = 0; j < navigationLinks.length; j++) {
+          navigationLinks[j].classList.remove("active");
+        }
+        for (let j = 0; j < pages.length; j++) {
+          pages[j].classList.remove("active");
+        }
+        this.classList.add("active");
+        const targetPage = this.innerHTML.toLowerCase(); // Assumes button text matches data-page attribute
+        const pageElement = document.querySelector(`[data-page="${targetPage}"]`);
+        if (pageElement) {
+          pageElement.classList.add("active");
+           // Scroll to top of the article when changing pages
+           pageElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+           // Trigger terminal animation if necessary
+           const terminalBody = pageElement.querySelector('.terminal-body');
+           if(terminalBody && !terminalBody.classList.contains('animated')) {
+               showTerminalLines(terminalBody);
+               terminalBody.classList.add('animated'); // Mark as animated
+           }
+        } else {
+          console.error(`Page not found for navigation link: ${targetPage}`);
+           // Fallback: Activate the first page if target not found
+           if (pages.length > 0) {
+             pages[0].classList.add("active");
+           }
+           if (navigationLinks.length > 0) {
+             navigationLinks[0].classList.add("active"); // Keep first link active
+           }
+        }
+        // Close sidebar on mobile after navigation
+         if (window.innerWidth < 580) {
+           sidebar.classList.remove("active");
+         }
+      });
+    }
+
+     // Form validation and handling (basic example)
+     const form = document.querySelector("[data-form]");
+     const formInputs = document.querySelectorAll("[data-form-input]");
+     const formBtn = document.querySelector("[data-form-btn]");
+
+     // add event to all form input fields
+     for (let i = 0; i < formInputs.length; i++) {
+       formInputs[i].addEventListener("input", function () {
+         // check form validation
+         if (form.checkValidity()) {
+           formBtn.removeAttribute("disabled");
+         } else {
+           formBtn.setAttribute("disabled", "");
+         }
+       });
+     }
+
+    // Add basic form submission handling (replace with actual backend endpoint)
+    form.addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent default submission
+        formBtn.setAttribute("disabled", ""); // Disable button during submission
+        formBtn.innerHTML = '<ion-icon name="sync-outline" class="spin"></ion-icon> Sending...'; // Indicate sending
+
+        // Simulate network request
+        setTimeout(() => {
+            alert("Message sent successfully! (Simulation)"); // Replace with actual success/error handling
+            form.reset(); // Reset form fields
+            formBtn.setAttribute("disabled", ""); // Keep disabled until new input
+             formBtn.innerHTML = '<ion-icon name="paper-plane"></ion-icon> Send Message'; // Restore button text
+        }, 1500); // Simulate 1.5 second delay
+    });
+
+     // Add spinning animation for sending icon
+     const style = document.createElement('style');
+     style.innerHTML = `
+       @keyframes spin {
+         from { transform: rotate(0deg); }
+         to { transform: rotate(360deg); }
+       }
+       .spin {
+         animation: spin 1s linear infinite;
+       }
+     `;
+     document.head.appendChild(style);
+
+
+    // Select filter functionality (for projects)
+    const select = document.querySelector("[data-select]");
+    const selectItems = document.querySelectorAll("[data-select-item]");
+    const selectValue = document.querySelector("[data-selecct-value]"); // Corrected typo
+    const filterBtns = document.querySelectorAll("[data-filter-btn]"); // Desktop filter buttons
+    const filterItems = document.querySelectorAll("[data-filter-item]");
+
+    if (select) {
+        select.addEventListener("click", function () { elementToggleFunc(this); });
+
+        // add event in all select items
+        for (let i = 0; i < selectItems.length; i++) {
+            selectItems[i].addEventListener("click", function () {
+                let selectedValue = this.innerText.toLowerCase();
+                selectValue.innerText = this.innerText;
+                elementToggleFunc(select);
+                filterFunc(selectedValue);
+            });
+        }
+    }
+
+    // Filter function
+    const filterFunc = function (selectedValue) {
+      for (let i = 0; i < filterItems.length; i++) {
+        if (selectedValue === "all" || selectedValue === filterItems[i].dataset.category.toLowerCase()) {
+          filterItems[i].classList.add("active");
+        } else {
+          filterItems[i].classList.remove("active");
+        }
+      }
+    }
+
+    // add event in all filter button items for large screen
+    let lastClickedBtn = filterBtns[0]; // Default to 'All'
+
+    if (filterBtns.length > 0) {
+        for (let i = 0; i < filterBtns.length; i++) {
+            filterBtns[i].addEventListener("click", function () {
+                let selectedValue = this.innerText.toLowerCase();
+                selectValue.innerText = this.innerText; // Sync select box text (though hidden)
+                filterFunc(selectedValue);
+
+                lastClickedBtn.classList.remove("active");
+                this.classList.add("active");
+                lastClickedBtn = this;
+            });
+        }
+    }
+
+
+    // Terminal typing animation function
+    function showTerminalLines(container) {
+      if (!container) return; // Exit if container not found
+      const lines = container.querySelectorAll('.terminal-line');
+      let lineIndex = 0;
+
+      // Clear existing lines' opacity before starting
+      lines.forEach(line => line.style.opacity = '0');
+
+      function showNextLine() {
+        if (lineIndex < lines.length) {
+          // Add slight random delay
+          setTimeout(() => {
+             if (lines[lineIndex]) { // Check if line exists
+                lines[lineIndex].style.opacity = '1';
+             }
+            lineIndex++;
+            showNextLine();
+          }, Math.random() * 100 + 30); // Faster animation (30-130ms delay)
+        } else {
+            // Add cursor blink effect at the end if desired
+            const lastLine = lines[lines.length - 1];
+            if(lastLine && lastLine.querySelector('.terminal-command') && !lastLine.querySelector('.cursor')) {
+                // Ensure it's a command line and doesn't already have a cursor
+                // const cursorSpan = document.createElement('span');
+                // cursorSpan.className = 'cursor';
+                // lastLine.querySelector('.terminal-command').insertAdjacentElement('afterend', cursorSpan);
+            }
+        }
+      }
+      showNextLine();
+    }
+
+    // Intersection Observer to trigger terminal animation when visible
+    const observerOptions = {
+        root: null, // Use the viewport as the root
+        rootMargin: '0px',
+        threshold: 0.1 // Trigger when 10% of the element is visible
+    };
+
+    const terminalObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const terminalBody = entry.target.querySelector('.terminal-body');
+                if (terminalBody && !terminalBody.classList.contains('animated')) {
+                    showTerminalLines(terminalBody);
+                    terminalBody.classList.add('animated'); // Mark as animated to prevent re-triggering
+                }
+                // Optional: Unobserve after animation if needed
+                // observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    // Observe all terminal elements
+    document.querySelectorAll('.terminal').forEach(terminal => {
+        terminalObserver.observe(terminal);
+    });
+
+    // Initial animation for the active page's terminal on load
+    document.addEventListener('DOMContentLoaded', () => {
+        const activePage = document.querySelector('article.active');
+        if (activePage) {
+            const terminalBody = activePage.querySelector('.terminal-body');
+             if(terminalBody && !terminalBody.classList.contains('animated')) {
+               showTerminalLines(terminalBody);
+               terminalBody.classList.add('animated'); // Mark as animated
+             }
+        }
+    });
+
+  </script>
 
 </body>
-
 </html>
