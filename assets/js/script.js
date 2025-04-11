@@ -1,11 +1,82 @@
 'use strict';
 
+// Ticker functionality for displaying market data
+const tickerContainer = document.getElementById('ticker-container');
 
+// Sample market data to use initially
+const initialMarketData = [
+  { symbol: 'BTC-USD', name: 'Bitcoin', price: 68421.24, change: '+2.5%', isPositive: true },
+  { symbol: 'ETH-USD', name: 'Ethereum', price: 3421.70, change: '-1.2%', isPositive: false },
+  { symbol: 'AAPL', name: 'Apple', price: 182.52, change: '+0.8%', isPositive: true },
+  { symbol: 'MSFT', name: 'Microsoft', price: 428.80, change: '+1.3%', isPositive: true },
+  { symbol: 'GOOGL', name: 'Google', price: 175.38, change: '-0.5%', isPositive: false },
+  { symbol: 'AMZN', name: 'Amazon', price: 182.81, change: '+1.7%', isPositive: true },
+  { symbol: 'TSLA', name: 'Tesla', price: 175.21, change: '-2.1%', isPositive: false },
+  { symbol: 'NVDA', name: 'NVIDIA', price: 108.12, change: '+3.2%', isPositive: true },
+  { symbol: 'JPM', name: 'JPMorgan', price: 198.75, change: '+0.4%', isPositive: true },
+  { symbol: 'V', name: 'Visa', price: 276.42, change: '+0.2%', isPositive: true }
+];
+
+// Populate ticker with initial data
+function populateTickerWithInitialData() {
+  initialMarketData.forEach(item => {
+    const tickerItem = document.createElement('div');
+    tickerItem.className = 'ticker-item';
+    
+    tickerItem.innerHTML = `
+      <span class="ticker-symbol">${item.symbol}</span>
+      <span class="ticker-price">$${item.price.toLocaleString()}</span>
+      <span class="ticker-change ${item.isPositive ? 'positive' : 'negative'}">${item.change}</span>
+    `;
+    
+    tickerContainer.appendChild(tickerItem);
+  });
+}
+
+// Fetch real market data from backend
+async function fetchMarketData() {
+  try {
+    const response = await fetch('/ticker');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    
+    // Clear existing ticker items
+    tickerContainer.innerHTML = '';
+    
+    // Add new ticker items from API
+    data.forEach(item => {
+      const isPositive = item.change.startsWith('+');
+      
+      const tickerItem = document.createElement('div');
+      tickerItem.className = 'ticker-item';
+      
+      tickerItem.innerHTML = `
+        <span class="ticker-symbol">${item.name}</span>
+        <span class="ticker-price">$${item.price.toLocaleString()}</span>
+        <span class="ticker-change ${isPositive ? 'positive' : 'negative'}">${item.change}</span>
+      `;
+      
+      tickerContainer.appendChild(tickerItem);
+    });
+  } catch (error) {
+    console.error('Error fetching market data:', error);
+    // If API fails, use initial data
+    populateTickerWithInitialData();
+  }
+}
+
+// Initialize ticker with initial data
+populateTickerWithInitialData();
+
+// Try to fetch real data every 60 seconds
+setInterval(() => {
+  fetchMarketData();
+}, 60000);
 
 // element toggle function
 const elementToggleFunc = function (elem) { elem.classList.toggle("active"); }
-
-
 
 // sidebar variables
 const sidebar = document.querySelector("[data-sidebar]");
@@ -13,8 +84,6 @@ const sidebarBtn = document.querySelector("[data-sidebar-btn]");
 
 // sidebar toggle functionality for mobile
 sidebarBtn.addEventListener("click", function () { elementToggleFunc(sidebar); });
-
-
 
 // testimonials variables
 const testimonialsItem = document.querySelectorAll("[data-testimonials-item]");
@@ -52,8 +121,6 @@ for (let i = 0; i < testimonialsItem.length; i++) {
 // add click event to modal close button
 modalCloseBtn.addEventListener("click", testimonialsModalFunc);
 overlay.addEventListener("click", testimonialsModalFunc);
-
-
 
 // custom select variables
 const select = document.querySelector("[data-select]");
@@ -113,8 +180,6 @@ for (let i = 0; i < filterBtn.length; i++) {
 
 }
 
-
-
 // contact form variables
 const form = document.querySelector("[data-form]");
 const formInputs = document.querySelectorAll("[data-form-input]");
@@ -133,8 +198,6 @@ for (let i = 0; i < formInputs.length; i++) {
 
   });
 }
-
-
 
 // page navigation variables
 const navigationLinks = document.querySelectorAll("[data-nav-link]");
@@ -156,4 +219,189 @@ for (let i = 0; i < navigationLinks.length; i++) {
     }
 
   });
+}
+
+// Initialize market chart when projects page is active
+document.addEventListener('DOMContentLoaded', function() {
+  const navigationLinks = document.querySelectorAll("[data-nav-link]");
+  
+  for (let i = 0; i < navigationLinks.length; i++) {
+    navigationLinks[i].addEventListener("click", function() {
+      if (this.innerHTML.toLowerCase() === 'projects') {
+        setTimeout(() => {
+          initializeMarketChart();
+        }, 300); // Small delay to ensure the canvas is visible
+      }
+    });
+  }
+  
+  // Check if we should initialize on page load (if projects page is already active)
+  if (document.querySelector('.projects.active')) {
+    setTimeout(() => {
+      initializeMarketChart();
+    }, 300);
+  }
+});
+
+// Function to initialize the market chart
+function initializeMarketChart() {
+  const ctx = document.getElementById('marketChart');
+  
+  // Check if the chart already exists
+  if (window.marketChart) {
+    window.marketChart.destroy();
+  }
+  
+  // Sample data for S&P 500 over 6 months
+  const dates = generateDateRange(180);
+  const spData = generateMarketData(3500, 5200, 180, 0.6);
+  
+  // Generate adjacent datasets for comparisons
+  const nasdaqData = generateMarketData(11000, 16500, 180, 0.7);
+  const btcData = generateMarketData(35000, 68000, 180, 1.5);
+  
+  // Create the chart
+  window.marketChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: dates,
+      datasets: [
+        {
+          label: 'S&P 500',
+          data: spData,
+          borderColor: 'rgba(79, 209, 197, 1)',
+          backgroundColor: 'rgba(79, 209, 197, 0.1)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4
+        },
+        {
+          label: 'NASDAQ',
+          data: nasdaqData,
+          borderColor: 'rgba(255, 193, 7, 1)',
+          backgroundColor: 'rgba(255, 193, 7, 0.05)',
+          borderWidth: 1.5,
+          fill: false,
+          tension: 0.4,
+          hidden: true
+        },
+        {
+          label: 'Bitcoin',
+          data: btcData,
+          borderColor: 'rgba(255, 99, 132, 1)',
+          backgroundColor: 'rgba(255, 99, 132, 0.05)',
+          borderWidth: 1.5,
+          fill: false,
+          tension: 0.4,
+          hidden: true
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: {
+            color: 'rgba(255, 255, 255, 0.7)',
+            font: {
+              family: "'Roboto Mono', monospace",
+              size: 11
+            }
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(33, 43, 54, 0.95)',
+          titleFont: { family: "'Roboto Mono', monospace" },
+          bodyFont: { family: "'Roboto Mono', monospace" },
+          displayColors: false,
+          callbacks: {
+            label: function(context) {
+              let label = context.dataset.label || '';
+              if (label) {
+                label += ': $';
+              }
+              if (context.parsed.y !== null) {
+                label += new Intl.NumberFormat('en-US').format(context.parsed.y.toFixed(2));
+              }
+              return label;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            color: 'rgba(255, 255, 255, 0.05)'
+          },
+          ticks: {
+            color: 'rgba(255, 255, 255, 0.5)',
+            maxTicksLimit: 8,
+            font: {
+              family: "'Roboto Mono', monospace",
+              size: 10
+            }
+          }
+        },
+        y: {
+          grid: {
+            color: 'rgba(255, 255, 255, 0.05)'
+          },
+          ticks: {
+            color: 'rgba(255, 255, 255, 0.5)',
+            callback: function(value) {
+              return '$' + value.toLocaleString();
+            },
+            font: {
+              family: "'Roboto Mono', monospace",
+              size: 10
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+// Helper function to generate dates going back X days
+function generateDateRange(days) {
+  const dates = [];
+  const today = new Date();
+  
+  for (let i = days; i >= 0; i--) {
+    const date = new Date(today);
+    date.setDate(date.getDate() - i);
+    dates.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+  }
+  
+  return dates;
+}
+
+// Helper function to generate realistic looking market data
+function generateMarketData(startPrice, endPrice, days, volatility) {
+  const data = [];
+  let price = startPrice;
+  
+  // Generate a somewhat realistic trend from start to end price
+  const trend = (endPrice - startPrice) / days;
+  
+  for (let i = 0; i <= days; i++) {
+    // Add some random volatility
+    const change = (Math.random() - 0.5) * volatility * price / 100;
+    price = price + trend + change;
+    
+    // Add some market corrections every so often
+    if (i % 30 === 0 && i > 0) {
+      price = price * (1 - (Math.random() * 0.05)); // Occasional dip
+    }
+    
+    data.push(price);
+  }
+  
+  return data;
 }

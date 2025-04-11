@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portfolio</title>
+  <title>Varun Budati | Quantitative Portfolio</title>
 
   <!--
     - favicon
@@ -23,12 +23,147 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  
+  <!-- Chart.js for financial data visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <style>
+    /* Market Ticker Style */
+    .market-ticker {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(33, 43, 54, 0.9);
+      color: #fff;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 12px;
+      overflow: hidden;
+      white-space: nowrap;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(79, 209, 197, 0.3);
+      backdrop-filter: blur(10px);
+      padding: 5px 0;
+    }
+    
+    .ticker-container {
+      display: inline-block;
+      animation: ticker-slide 60s linear infinite;
+    }
+    
+    .ticker-item {
+      display: inline-block;
+      padding: 0 20px;
+    }
+    
+    .ticker-item span {
+      margin-right: 8px;
+    }
+    
+    .ticker-symbol {
+      color: var(--orange-yellow-crayola);
+      font-weight: 500;
+    }
+    
+    .ticker-price {
+      color: #fff;
+    }
+    
+    .ticker-change.positive {
+      color: #0acf97;
+    }
+    
+    .ticker-change.negative {
+      color: #fa5c7c;
+    }
+    
+    @keyframes ticker-slide {
+      0% {
+        transform: translateX(100%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+    
+    /* Add more financial styling elements */
+    .financial-graph {
+      border: 1px solid var(--jet);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      background: var(--eerie-black-1);
+    }
+    
+    .financial-data {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 14px;
+      background: var(--eerie-black-2);
+      padding: 15px;
+      border-radius: 14px;
+      margin-bottom: 20px;
+      border: 1px solid var(--jet);
+    }
+    
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--jet);
+    }
+    
+    .data-row:last-child {
+      border-bottom: none;
+    }
+    
+    .data-label {
+      color: var(--light-gray-70);
+    }
+    
+    .data-value {
+      color: var(--orange-yellow-crayola);
+      font-weight: 500;
+    }
+    
+    /* Terminal-style section */
+    .terminal {
+      font-family: 'Roboto Mono', monospace;
+      background: rgba(30, 38, 47, 0.95);
+      color: #a4ffb0;
+      padding: 20px;
+      border-radius: 14px;
+      margin-bottom: 20px;
+      border: 1px solid var(--jet);
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .terminal-line {
+      line-height: 1.5;
+      position: relative;
+      padding-left: 15px;
+    }
+    
+    .terminal-line::before {
+      content: ">";
+      position: absolute;
+      left: 0;
+      color: var(--vegas-gold);
+    }
+  </style>
 </head>
 
 <body>
-
+  <!-- Market Ticker -->
+  <div class="market-ticker">
+    <div class="ticker-container" id="ticker-container">
+      <!-- Ticker items will be inserted here via JavaScript -->
+    </div>
+  </div>
+  
   <!--
     - #MAIN
   -->
@@ -600,6 +735,50 @@
         <header>
           <h2 class="h2 article-title">Projects</h2>
         </header>
+        
+        <!-- Live Market Data Section -->
+        <section class="financial-dashboard">
+          <h3 class="h3">Live Market Analytics</h3>
+          
+          <!-- Market Data Panel -->
+          <div class="financial-data">
+            <div class="data-row">
+              <span class="data-label">S&P 500</span>
+              <span class="data-value" id="sp500-value">5,203.58 <span style="color: #0acf97;">+0.74%</span></span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">NASDAQ</span>
+              <span class="data-value" id="nasdaq-value">16,428.82 <span style="color: #0acf97;">+1.25%</span></span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">VIX</span>
+              <span class="data-value" id="vix-value">16.72 <span style="color: #fa5c7c;">-4.67%</span></span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">10Y Treasury</span>
+              <span class="data-value" id="treasury-value">4.32% <span style="color: #fa5c7c;">-0.02</span></span>
+            </div>
+          </div>
+          
+          <!-- Market Chart -->
+          <div class="financial-graph">
+            <canvas id="marketChart" height="250"></canvas>
+          </div>
+          
+          <!-- Trading Algorithm Performance Metrics -->
+          <div class="terminal">
+            <div class="terminal-line">Portfolio Optimization Algorithm v1.2.5</div>
+            <div class="terminal-line">Backtesting results (2022-2025):</div>
+            <div class="terminal-line">Annual Return: 18.72%</div>
+            <div class="terminal-line">Sharpe Ratio: 1.85</div>
+            <div class="terminal-line">Max Drawdown: -12.4%</div>
+            <div class="terminal-line">Beta: 0.75</div>
+            <div class="terminal-line">Alpha: 6.2%</div>
+            <div class="terminal-line">Running Monte Carlo simulation...</div>
+            <div class="terminal-line">95% VaR: -1.8%</div>
+            <div class="terminal-line">Optimal allocation found: [0.25, 0.15, 0.40, 0.10, 0.10]</div>
+          </div>
+        </section>
 
         <section class="projects">
 
