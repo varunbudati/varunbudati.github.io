@@ -3,7 +3,7 @@
 // Ticker functionality for displaying market data
 const tickerContainer = document.getElementById('ticker-container');
 
-// Sample market data to use initially
+// Sample market data to use if API fails (as fallback)
 const initialMarketData = [
   { symbol: 'BTC-USD', name: 'Bitcoin', price: 68421.24, change: '+2.5%', isPositive: true },
   { symbol: 'ETH-USD', name: 'Ethereum', price: 3421.70, change: '-1.2%', isPositive: false },
@@ -17,15 +17,18 @@ const initialMarketData = [
   { symbol: 'V', name: 'Visa', price: 276.42, change: '+0.2%', isPositive: true }
 ];
 
-// Populate ticker with initial data
-function populateTickerWithInitialData() {
-  initialMarketData.forEach(item => {
+// Populate ticker with data
+function populateTickerWithData(data) {
+  // Clear ticker
+  tickerContainer.innerHTML = '';
+  
+  data.forEach(item => {
     const tickerItem = document.createElement('div');
     tickerItem.className = 'ticker-item';
     
     tickerItem.innerHTML = `
       <span class="ticker-symbol">${item.symbol}</span>
-      <span class="ticker-price">$${item.price.toLocaleString()}</span>
+      <span class="ticker-price">$${typeof item.price === 'number' ? item.price.toLocaleString() : item.price}</span>
       <span class="ticker-change ${item.isPositive ? 'positive' : 'negative'}">${item.change}</span>
     `;
     
@@ -42,35 +45,52 @@ async function fetchMarketData() {
     }
     const data = await response.json();
     
-    // Clear existing ticker items
-    tickerContainer.innerHTML = '';
+    // Update ticker with real-time data
+    populateTickerWithData(data);
     
-    // Add new ticker items from API
-    data.forEach(item => {
-      const isPositive = item.change.startsWith('+');
-      
-      const tickerItem = document.createElement('div');
-      tickerItem.className = 'ticker-item';
-      
-      tickerItem.innerHTML = `
-        <span class="ticker-symbol">${item.name}</span>
-        <span class="ticker-price">$${item.price.toLocaleString()}</span>
-        <span class="ticker-change ${isPositive ? 'positive' : 'negative'}">${item.change}</span>
-      `;
-      
-      tickerContainer.appendChild(tickerItem);
-    });
+    return true;
   } catch (error) {
     console.error('Error fetching market data:', error);
     // If API fails, use initial data
-    populateTickerWithInitialData();
+    populateTickerWithData(initialMarketData);
+    
+    return false;
+  }
+}
+
+// Update market indices in the financial dashboard
+async function updateMarketIndices() {
+  try {
+    const response = await fetch('/market-indices');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    
+    // Update each index with real-time data
+    data.forEach(item => {
+      const elementId = item.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') + '-value';
+      const element = document.getElementById(elementId);
+      
+      if (element) {
+        element.innerHTML = `${item.value} <span style="color: ${item.isPositive ? '#0acf97' : '#fa5c7c'}">${item.change}</span>`;
+      }
+    });
+    
+    return true;
+  } catch (error) {
+    console.error('Error updating market indices:', error);
+    return false;
   }
 }
 
 // Initialize ticker with initial data
-populateTickerWithInitialData();
+populateTickerWithData(initialMarketData);
 
-// Try to fetch real data every 60 seconds
+// Immediately try to fetch real data
+fetchMarketData();
+
+// Refresh ticker data every 60 seconds
 setInterval(() => {
   fetchMarketData();
 }, 60000);
@@ -230,6 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (this.innerHTML.toLowerCase() === 'projects') {
         setTimeout(() => {
           initializeMarketChart();
+          updateMarketIndices();
         }, 300); // Small delay to ensure the canvas is visible
       }
     });
@@ -239,12 +260,13 @@ document.addEventListener('DOMContentLoaded', function() {
   if (document.querySelector('.projects.active')) {
     setTimeout(() => {
       initializeMarketChart();
+      updateMarketIndices();
     }, 300);
   }
 });
 
-// Function to initialize the market chart
-function initializeMarketChart() {
+// Function to initialize the market chart with real data
+async function initializeMarketChart() {
   const ctx = document.getElementById('marketChart');
   
   // Check if the chart already exists
@@ -252,120 +274,175 @@ function initializeMarketChart() {
     window.marketChart.destroy();
   }
   
-  // Sample data for S&P 500 over 6 months
-  const dates = generateDateRange(180);
-  const spData = generateMarketData(3500, 5200, 180, 0.6);
-  
-  // Generate adjacent datasets for comparisons
-  const nasdaqData = generateMarketData(11000, 16500, 180, 0.7);
-  const btcData = generateMarketData(35000, 68000, 180, 1.5);
-  
-  // Create the chart
-  window.marketChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: dates,
-      datasets: [
-        {
-          label: 'S&P 500',
-          data: spData,
-          borderColor: 'rgba(79, 209, 197, 1)',
-          backgroundColor: 'rgba(79, 209, 197, 0.1)',
-          borderWidth: 2,
-          fill: true,
-          tension: 0.4
-        },
-        {
-          label: 'NASDAQ',
-          data: nasdaqData,
-          borderColor: 'rgba(255, 193, 7, 1)',
-          backgroundColor: 'rgba(255, 193, 7, 0.05)',
-          borderWidth: 1.5,
-          fill: false,
-          tension: 0.4,
-          hidden: true
-        },
-        {
-          label: 'Bitcoin',
-          data: btcData,
-          borderColor: 'rgba(255, 99, 132, 1)',
-          backgroundColor: 'rgba(255, 99, 132, 0.05)',
-          borderWidth: 1.5,
-          fill: false,
-          tension: 0.4,
-          hidden: true
-        }
-      ]
+  try {
+    // Try to fetch real historical data from our API
+    const response = await fetch('/historical-data');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    
+    const historicalData = await response.json();
+    
+    // Create the chart with real data
+    window.marketChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: historicalData.dates,
+        datasets: [
+          {
+            label: 'S&P 500',
+            data: historicalData.sp500,
+            borderColor: 'rgba(79, 209, 197, 1)',
+            backgroundColor: 'rgba(79, 209, 197, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+          },
+          {
+            label: 'NASDAQ',
+            data: historicalData.nasdaq,
+            borderColor: 'rgba(255, 193, 7, 1)',
+            backgroundColor: 'rgba(255, 193, 7, 0.05)',
+            borderWidth: 1.5,
+            fill: false,
+            tension: 0.4,
+            hidden: true
+          },
+          {
+            label: 'Bitcoin',
+            data: historicalData.bitcoin,
+            borderColor: 'rgba(255, 99, 132, 1)',
+            backgroundColor: 'rgba(255, 99, 132, 0.05)',
+            borderWidth: 1.5,
+            fill: false,
+            tension: 0.4,
+            hidden: true
+          }
+        ]
+      },
+      options: createChartOptions()
+    });
+  } catch (error) {
+    console.error('Error fetching historical data:', error);
+    
+    // Fallback to generated data
+    const dates = generateDateRange(180);
+    const spData = generateMarketData(3500, 5200, 180, 0.6);
+    const nasdaqData = generateMarketData(11000, 16500, 180, 0.7);
+    const btcData = generateMarketData(35000, 68000, 180, 1.5);
+    
+    // Create chart with fallback data
+    window.marketChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: dates,
+        datasets: [
+          {
+            label: 'S&P 500',
+            data: spData,
+            borderColor: 'rgba(79, 209, 197, 1)',
+            backgroundColor: 'rgba(79, 209, 197, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+          },
+          {
+            label: 'NASDAQ',
+            data: nasdaqData,
+            borderColor: 'rgba(255, 193, 7, 1)',
+            backgroundColor: 'rgba(255, 193, 7, 0.05)',
+            borderWidth: 1.5,
+            fill: false,
+            tension: 0.4,
+            hidden: true
+          },
+          {
+            label: 'Bitcoin',
+            data: btcData,
+            borderColor: 'rgba(255, 99, 132, 1)',
+            backgroundColor: 'rgba(255, 99, 132, 0.05)',
+            borderWidth: 1.5,
+            fill: false,
+            tension: 0.4,
+            hidden: true
+          }
+        ]
+      },
+      options: createChartOptions()
+    });
+  }
+}
+
+// Chart.js options
+function createChartOptions() {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: 'index',
+      intersect: false,
     },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: {
-        mode: 'index',
-        intersect: false,
-      },
-      plugins: {
-        legend: {
-          position: 'top',
-          labels: {
-            color: 'rgba(255, 255, 255, 0.7)',
-            font: {
-              family: "'Roboto Mono', monospace",
-              size: 11
-            }
-          }
-        },
-        tooltip: {
-          backgroundColor: 'rgba(33, 43, 54, 0.95)',
-          titleFont: { family: "'Roboto Mono', monospace" },
-          bodyFont: { family: "'Roboto Mono', monospace" },
-          displayColors: false,
-          callbacks: {
-            label: function(context) {
-              let label = context.dataset.label || '';
-              if (label) {
-                label += ': $';
-              }
-              if (context.parsed.y !== null) {
-                label += new Intl.NumberFormat('en-US').format(context.parsed.y.toFixed(2));
-              }
-              return label;
-            }
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: {
+          color: 'rgba(255, 255, 255, 0.7)',
+          font: {
+            family: "'Roboto Mono', monospace",
+            size: 11
           }
         }
       },
-      scales: {
-        x: {
-          grid: {
-            color: 'rgba(255, 255, 255, 0.05)'
-          },
-          ticks: {
-            color: 'rgba(255, 255, 255, 0.5)',
-            maxTicksLimit: 8,
-            font: {
-              family: "'Roboto Mono', monospace",
-              size: 10
+      tooltip: {
+        backgroundColor: 'rgba(33, 43, 54, 0.95)',
+        titleFont: { family: "'Roboto Mono', monospace" },
+        bodyFont: { family: "'Roboto Mono', monospace" },
+        displayColors: false,
+        callbacks: {
+          label: function(context) {
+            let label = context.dataset.label || '';
+            if (label) {
+              label += ': $';
             }
+            if (context.parsed.y !== null) {
+              label += new Intl.NumberFormat('en-US').format(context.parsed.y.toFixed(2));
+            }
+            return label;
           }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: {
+          color: 'rgba(255, 255, 255, 0.05)'
         },
-        y: {
-          grid: {
-            color: 'rgba(255, 255, 255, 0.05)'
+        ticks: {
+          color: 'rgba(255, 255, 255, 0.5)',
+          maxTicksLimit: 8,
+          font: {
+            family: "'Roboto Mono', monospace",
+            size: 10
+          }
+        }
+      },
+      y: {
+        grid: {
+          color: 'rgba(255, 255, 255, 0.05)'
+        },
+        ticks: {
+          color: 'rgba(255, 255, 255, 0.5)',
+          callback: function(value) {
+            return '$' + value.toLocaleString();
           },
-          ticks: {
-            color: 'rgba(255, 255, 255, 0.5)',
-            callback: function(value) {
-              return '$' + value.toLocaleString();
-            },
-            font: {
-              family: "'Roboto Mono', monospace",
-              size: 10
-            }
+          font: {
+            family: "'Roboto Mono', monospace",
+            size: 10
           }
         }
       }
     }
-  });
+  };
 }
 
 // Helper function to generate dates going back X days
