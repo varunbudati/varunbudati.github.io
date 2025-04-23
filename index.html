@@ -153,6 +153,35 @@
       left: 0;
       color: var(--vegas-gold);
     }
+    
+    .download-button {
+      background-color: var(--orange-yellow-crayola);
+      border: none;
+      padding: 10px 20px;
+      margin-left: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+      text-decoration: none;
+      color: var(--eerie-black-1);
+      font-weight: bold;
+      display: inline-block;
+    }
+    
+    .download-button:hover {
+      background-color: var(--vegas-gold);
+    }
+    
+    .pdf-preview {
+      width: 50%;
+      height: 600px;
+      border: 1px solid #ccc;
+      margin-left: 20px;
+    }
+    
+    .header {
+      display: flex;
+      align-items: center;
+    }
   </style>
 </head>
 
@@ -490,29 +519,6 @@
                 align-items: center;
                 
             }
-    
-            .download-button {
-                background-color: #f0c040;
-                border: none;
-                padding: 10px 20px;
-                margin-left: 20px;
-                cursor: pointer;
-                border-radius: 5px;
-                text-decoration: none;
-                color: #fff;
-                font-weight: bold;
-                margin-top: -40px;
-            }
-    
-            .download-button:hover {
-                background-color: #e5b135;
-            }
-            .pdf-preview {
-              width: 50%; /* Adjust width as needed */
-              height: 600px; /* Adjust height as needed */
-              border: 1px solid #ccc;
-              margin-left: 20px;
-            }
         </style>
     </head>
     <body>
@@ -521,7 +527,8 @@
         <header>
           <h2 class="h2 article-title">Resume</h2>
         </header>
-        <a href="assets/images/resume.pdf" class="download-button" download>Download</a>
+        <a href="assets/images/SWE_Resume.pdf" class="download-button" download>SWE</a>
+        <a href="assets/images/Quant_Resume.pdf" class="download-button" download>Quant</a>
     </div>
         
         
